@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Historical Data - Bangus Pond Monitor</title>
+  
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome for Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <link rel="stylesheet" href="../css/history.css">
+  <link rel="stylesheet" href="../css/modal.css">
+</head>
+
+<body>
+  <!-- Loading Overlay -->
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-content">
+      <div class="loading-spinner"></div>
+      <h3 id="loadingText">Loading...</h3>
+    </div>
+  </div>
+
+  <!-- Mode Transition Overlay -->
+  <div class="mode-transition" id="modeTransition"></div>
+  
+  <!-- Stars for dark mode -->
+  <div class="stars" id="starsContainer"></div>
+
+  <!-- Hamburger Button -->
+  <button class="hamburger" id="hamburgerBtn" onclick="toggleSidebar()" aria-label="Toggle menu">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+
+  <!-- Overlay behind sidebar -->
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+  <div class="container">
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+      <ul>
+
+        <!-- ✅ ALL ROLES -->
+        <li>
+          <a href="dashboard.html">
+            <i class="fas fa-home icon"></i>
+            <span class="text">Dashboard</span>
+          </a>
+        </li>
+
+        <!-- ✅ USER + ADMIN only (hidden from guest) -->
+        <li id="historyTab" class="active" data-hide-for-role="guest">
+          <a href="history.html">
+            <i class="fas fa-database icon"></i>
+            <span class="text">Data and Analysis</span>
+          </a>
+        </li>
+
+        <!-- ✅ USER + ADMIN only (hidden from guest) -->
+        <li id="alertsTab" data-hide-for-role="guest">
+          <a href="alerts.html">
+            <i class="fas fa-bell icon"></i>
+            <span class="text">Alerts</span>
+          </a>
+        </li>
+
+        <!-- ✅ USER + ADMIN only (hidden from guest) -->
+        <li id="reportsTab" data-hide-for-role="guest">
+          <a href="reports.html">
+            <i class="fas fa-file-alt icon"></i>
+            <span class="text">Reports</span>
+          </a>
+        </li>
+
+        <!-- ✅ ADMIN only -->
+        <li id="systemConfigurationTab" data-role="admin">
+          <a href="systemConfig.html">
+            <i class="fas fa-user-cog icon"></i>
+            <span class="text">User & System</span>
+          </a>
+        </li>
+
+        <!-- ✅ ADMIN only -->
+        <li id="adminDashboardTab" data-role="admin">
+          <a href="admindashboard.html">
+            <i class="fas fa-user-shield icon"></i>
+            <span class="text">Admin</span>
+          </a>
+        </li>
+
+      </ul>
+    </aside>
+
+    <!-- CONTENT -->
+    <main class="content">
+      <!-- TOP STATUS BAR -->
+      <div class="top-status">
+        <!-- Left Section: Branding -->
+        <div class="status-left">
+        <img src="/images/gataw.png" alt="GATAW" style="height:32px; object-fit:contain; filter:brightness(0) ;">
+          <div class="header-text">
+            <div class="header-title">Bangus Pond Monitor</div>
+            <div class="header-location">
+              <i class="fas fa-map-marker-alt"></i>
+              <span>Brgy. Naguilayan Binmaley, Pangasinan</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Section: Status Items -->
+        <div class="status-right">
+          <div class="status-item">
+            <i class="fas fa-wifi"></i>
+            ESP32: <span id="espStatus" class="dot offline"></span>
+          </div>
+          
+          <div class="battery-indicator" id="batteryIndicator">
+            <i class="fas fa-battery-three-quarters"></i>
+            <span id="battery">--%</span>
+          </div>
+
+          <div class="status-item">
+            <i class="fas fa-fan"></i>
+            Aerator: <span id="aeratorStatusText">--</span>
+          </div>
+
+          <div class="status-item">
+            <i class="fas fa-clock"></i>
+            <span id="lastUpdate">--</span>
+          </div>
+
+          <!-- Dark Mode Toggle -->
+          <div class="header-theme-toggle">
+            <label class="theme-toggle-switch" title="Toggle dark mode">
+              <input type="checkbox" id="darkModeToggle" onchange="toggleDarkMode()">
+              <span class="theme-toggle-slider">
+                <i class="fas fa-sun theme-icon-sun"></i>
+                <i class="fas fa-moon theme-icon-moon"></i>
+              </span>
+            </label>
+          </div>
+
+          <!-- Profile Dropdown -->
+          <div class="profile-dropdown-container">
+            <div class="profile-trigger" id="profileTrigger">
+              <i class="fas fa-user-circle"></i>
+              <span id="userEmail">Loading...</span>
+              <i class="fas fa-chevron-down dropdown-arrow"></i>
+            </div>
+            
+            <div class="profile-dropdown" id="profileDropdown">
+              <div class="dropdown-header">
+                <div class="dropdown-user-info">
+                  <i class="fas fa-user-circle user-avatar"></i>
+                  <div class="user-details">
+                    <span class="user-name" id="dropdownUserName">Loading...</span>
+                    <span class="user-email-full" id="dropdownUserEmail">Loading...</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="dropdown-divider"></div>
+              
+              <div class="dropdown-menu">
+                <div class="dropdown-item role-item">
+                  <i class="fas fa-id-badge"></i>
+                  <span><strong id="dropdownUserRole">Loading...</strong></span>
+                </div>
+                
+                <div class="dropdown-divider"></div>
+                
+                <a href="#" class="dropdown-item logout-item" id="logoutBtn">
+                  <i class="fas fa-sign-out-alt"></i>
+                  <span>Logout</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <h1>Historical Data</h1>
+
+      <!-- DATA VIEW SECTION -->
+      <div id="dataViewSection">
+        <div class="filter-bar">
+          <div class="date-input-wrapper">
+            <input type="date" id="dateFromInput" placeholder="Start Date">
+          </div>
+          <div class="date-input-wrapper">
+            <input type="date" id="dateToInput" placeholder="End Date">
+          </div>
+          <div class="time-input-wrapper">
+            <input type="time" id="timeFromInput" placeholder="Time From">
+          </div>
+          <div class="time-input-wrapper">
+            <input type="time" id="timeToInput" placeholder="Time To">
+          </div>
+          <select id="sortSelect">
+            <option value="newest">Newest First</option>
+            <option value="oldest">Oldest First</option>
+          </select>
+
+          <!-- EXPORT BUTTON -->
+          <div class="export-dropdown">
+            <button id="exportBtn" class="export-btn" disabled>
+              <i class="fas fa-download"></i> Export Data
+            </button>
+            <div class="export-menu" id="exportMenu">
+              <button onclick="exportData('csv')">
+                <i class="fas fa-file-csv"></i> Export as CSV
+              </button>
+              <button onclick="exportData('excel')">
+                <i class="fas fa-file-excel"></i> Export as Excel
+              </button>
+              <button onclick="exportData('pdf')">
+                <i class="fas fa-file-pdf"></i> Export as PDF
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <table class="history-table">
+          <thead>
+            <tr>
+              <th>Date & Time</th>
+              <th>Temperature (°C)</th>
+              <th>pH</th>
+              <th>Salinity (ppt)</th>
+              <th>Turbidity (NTU)</th>
+              <th>DO (mg/L)</th>
+            </tr>
+          </thead>
+          <tbody id="historyBody">
+            <tr>
+              <td colspan="7" style="text-align: center; padding: 40px;">
+                Please select both start and end dates to view data
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="pagination-container">
+          <div class="pagination-info" id="paginationInfo"></div>
+          <div class="pagination-controls" id="paginationControls"></div>
+        </div>
+      </div>
+
+      <!-- Export Loading Overlay -->
+      <div id="exportLoading" class="export-loading">
+        <div class="export-loading-content">
+          <div class="spinner"></div>
+          <p>Generating export file...</p>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Delete Confirmation Modal -->
+  <div id="deleteConfirmModal">
+    <div class="modal-box">
+      <div class="modal-icon">
+        <i class="fas fa-trash-alt"></i>
+      </div>
+      <h3 id="modalTitle">Delete records?</h3>
+      <p id="modalMessage">This will permanently remove records from the database.</p>
+      <div class="modal-actions">
+        <button class="btn-cancel" id="modalCancelBtn">Cancel</button>
+        <button class="btn-confirm-delete" id="modalConfirmBtn">
+          <i class="fas fa-trash-alt"></i> Delete
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Success Notification -->
+  <div id="successNotification">
+    <i class="fas fa-check-circle"></i>
+    <span id="successNotificationText">Success!</span>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/all.min.js"></script>
+
+  <!-- Firebase SDK v8 -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-messaging.js"></script>
+
+  <!-- Export Libraries -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+  <!-- Your Firebase Config -->
+  <script src="../js/firebase.js"></script>
+
+  <!-- 1. Auth Guard -->
+  <script src="../js/authguard.js"></script>
+
+  <!-- 2. Role Manager -->
+  <script src="../js/rolemanager.js"></script>
+
+  <!-- 3. Notifications — must be before auth.js -->
+  <script src="../js/notifications.js"></script>
+
+  <!-- 4. Auth -->
+  <script src="../js/auth.js"></script>
+
+  <!-- 5. App Logic -->
+  <script src="../js/app.js"></script>
+  <!-- 5. Page-specific scripts -->
+  <script src="../js/history.js"></script>
+  <script src="../js/dashEssentials.js"></script>
+
+</body>
+</html>

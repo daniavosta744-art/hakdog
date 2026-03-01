@@ -1,0 +1,1051 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Water Quality Analytics</title>
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome for Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <!-- External CSS - Uses same dashboard CSS -->
+  <link rel="stylesheet" href="../css/dashboard.css">
+  
+  <!-- Analytics-specific CSS -->
+  <link rel="stylesheet" href="../css/analytics.css">
+
+  <!-- Chart.js for visualizations -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  
+  <!-- Chart.js Zoom Plugin for interactive charts -->
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.0.1/dist/chartjs-plugin-zoom.min.js"></script>
+
+  <!-- Chart.js Annotation Plugin for safe-range reference lines -->
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1/dist/chartjs-plugin-annotation.min.js"></script>
+  
+  <!-- Simple Statistics Library for Analytics -->
+  <script src="https://unpkg.com/simple-statistics@7.8.3/dist/simple-statistics.min.js"></script>
+
+  <style>
+    /* ============================================
+       TAB NAVIGATION STYLES
+    ============================================ */
+    .page-tabs {
+      display: flex;
+      gap: 0;
+      margin-bottom: 1.5rem;
+      border-bottom: 2px solid #e2e8f0;
+      position: relative;
+    }
+
+    .page-tab-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.85rem 1.5rem;
+      background: none;
+      border: none;
+      border-bottom: 3px solid transparent;
+      margin-bottom: -2px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: #64748b;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .page-tab-btn:hover {
+      color: #0ea5e9;
+      background: rgba(14, 165, 233, 0.05);
+    }
+
+    .page-tab-btn.active {
+      color: #0ea5e9;
+      border-bottom-color: #0ea5e9;
+      font-weight: 600;
+    }
+
+    .page-tab-btn .tab-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 20px;
+      height: 20px;
+      padding: 0 6px;
+      border-radius: 10px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      background: #e2e8f0;
+      color: #64748b;
+      transition: all 0.2s ease;
+    }
+
+    .page-tab-btn.active .tab-badge {
+      background: #0ea5e9;
+      color: white;
+    }
+
+    .page-tab-btn .tab-badge.badge-danger {
+      background: #dc2626;
+      color: white;
+    }
+
+    .page-tab-btn .tab-badge.badge-warning {
+      background: #f59e0b;
+      color: white;
+    }
+
+    /* Tab Content Panels */
+    .tab-panel {
+      display: none;
+    }
+
+    .tab-panel.active {
+      display: block;
+    }
+
+    /* ============================================
+       FORECAST TAB STYLES
+    ============================================ */
+    .forecast-header-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .forecast-header-bar h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #0f172a;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .forecast-settings-inline {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .forecast-settings-inline label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #475569;
+      white-space: nowrap;
+    }
+
+    .forecast-settings-inline select {
+      font-size: 0.85rem;
+      padding: 0.4rem 0.75rem;
+    }
+
+    /* Severity sections in forecast */
+    .forecast-severity-section {
+      margin-bottom: 1.75rem;
+    }
+
+    .forecast-severity-label {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.5rem 0.85rem;
+      border-radius: 6px;
+      margin-bottom: 0.85rem;
+    }
+
+    .forecast-severity-label.label-info {
+      background: #eff6ff;
+      color: #1d4ed8;
+    }
+
+    .forecast-severity-label.label-warning {
+      background: #fffbeb;
+      color: #b45309;
+    }
+
+    .forecast-severity-label.label-critical {
+      background: #fef2f2;
+      color: #b91c1c;
+    }
+
+    .forecast-empty {
+      text-align: center;
+      padding: 3.5rem 2rem;
+      color: #94a3b8;
+    }
+
+    .forecast-empty i {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      display: block;
+      opacity: 0.5;
+    }
+
+    .forecast-empty h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: #64748b;
+    }
+
+    .forecast-empty p {
+      font-size: 0.875rem;
+    }
+
+    /* ============================================
+       PARAMETER FILTER ROW (Correlation Card)
+    ============================================ */
+    .param-filter-row {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      flex-wrap: wrap;
+      padding: 0.75rem 0.25rem 1rem;
+      border-bottom: 1px solid #e2e8f0;
+      margin-bottom: 0.5rem;
+    }
+
+    .param-filter-label {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: #475569;
+      white-space: nowrap;
+    }
+
+    .param-checkboxes {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .param-checkbox-label {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    /* Hide the raw checkbox, use the pill as the visual */
+    .param-checkbox-label input[type="checkbox"] {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .param-pill {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      border: 2px solid transparent;
+      transition: all 0.18s ease;
+      opacity: 0.35;
+    }
+
+    /* Active state — checkbox is checked */
+    .param-checkbox-label input:checked + .param-pill {
+      opacity: 1;
+    }
+
+    /* Per-parameter colours */
+    .param-do          { background: rgba(14,165,233,0.15);  border-color: #0ea5e9; color: #0369a1; }
+    .param-salinity    { background: rgba(239,68,68,0.12);   border-color: #ef4444; color: #b91c1c; }
+    .param-temperature { background: rgba(245,158,11,0.15);  border-color: #f59e0b; color: #b45309; }
+    .param-ph          { background: rgba(16,185,129,0.15);  border-color: #10b981; color: #047857; }
+    .param-turbidity   { background: rgba(139,92,246,0.15);  border-color: #8b5cf6; color: #6d28d9; }
+
+    /* Dark mode support */
+    body.dark-mode .page-tabs {
+      border-bottom-color: #334155;
+    }
+
+    body.dark-mode .page-tab-btn {
+      color: #94a3b8;
+    }
+
+    body.dark-mode .page-tab-btn:hover {
+      color: #38bdf8;
+      background: rgba(56, 189, 248, 0.08);
+    }
+
+    body.dark-mode .page-tab-btn.active {
+      color: #38bdf8;
+      border-bottom-color: #38bdf8;
+    }
+
+    body.dark-mode .page-tab-btn .tab-badge {
+      background: #334155;
+      color: #94a3b8;
+    }
+
+    body.dark-mode .page-tab-btn.active .tab-badge {
+      background: #0ea5e9;
+      color: white;
+    }
+
+    body.dark-mode .forecast-header-bar h2 {
+      color: #f1f5f9;
+    }
+
+    body.dark-mode .forecast-severity-label.label-info {
+      background: rgba(29, 78, 216, 0.15);
+      color: #93c5fd;
+    }
+
+    body.dark-mode .forecast-severity-label.label-warning {
+      background: rgba(180, 83, 9, 0.15);
+      color: #fcd34d;
+    }
+
+    body.dark-mode .forecast-severity-label.label-critical {
+      background: rgba(185, 28, 28, 0.15);
+      color: #fca5a5;
+    }
+
+    body.dark-mode .param-filter-row {
+      border-bottom-color: #334155;
+    }
+
+    body.dark-mode .param-filter-label {
+      color: #94a3b8;
+    }
+
+    body.dark-mode .param-do          { background: rgba(14,165,233,0.2);  border-color: #0ea5e9; color: #38bdf8; }
+    body.dark-mode .param-salinity    { background: rgba(239,68,68,0.2);   border-color: #ef4444; color: #fca5a5; }
+    body.dark-mode .param-temperature { background: rgba(245,158,11,0.2);  border-color: #f59e0b; color: #fcd34d; }
+    body.dark-mode .param-ph          { background: rgba(16,185,129,0.2);  border-color: #10b981; color: #6ee7b7; }
+    body.dark-mode .param-turbidity   { background: rgba(139,92,246,0.2);  border-color: #8b5cf6; color: #c4b5fd; }
+
+    /* Statistical Insights panel — no background */
+    body.dark-mode #insightsPanel {
+      background: none;
+      box-shadow: none;
+      border: 1px solid #334155;
+    }
+
+    /* Summary tab date/time inputs — dark mode */
+    body.dark-mode #summaryStartDate,
+    body.dark-mode #summaryEndDate,
+    body.dark-mode #summaryStartTime,
+    body.dark-mode #summaryEndTime {
+      background: #1e293b;
+      border-color: #334155;
+      color: #f1f5f9;
+      color-scheme: dark;
+    }
+
+    /* Summary chart cards */
+    .summary-chart-card {
+      margin-bottom: 1.5rem;
+    }
+
+    .summary-chart-card .summary-chart-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #0f172a;
+      margin-bottom: 0.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    body.dark-mode .summary-chart-card .summary-chart-title {
+      color: #f1f5f9;
+    }
+
+    .summary-no-data {
+      text-align: center;
+      padding: 2.5rem 1rem;
+      color: #94a3b8;
+      font-size: 0.9rem;
+    }
+
+    .summary-status-info {
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 10px;
+      padding: 0.85rem 1.1rem;
+      font-size: 0.875rem;
+      color: #1d4ed8;
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    body.dark-mode .summary-status-info {
+      background: rgba(29,78,216,0.12);
+      border-color: rgba(147,197,253,0.3);
+      color: #93c5fd;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Loading Overlay -->
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-content">
+      <div class="loading-spinner"></div>
+      <h3 id="loadingText">Loading...</h3>
+    </div>
+  </div>
+
+  <!-- Mode Transition Overlay -->
+  <div class="mode-transition" id="modeTransition"></div>
+  
+  <!-- Stars for dark mode -->
+  <div class="stars" id="starsContainer"></div>
+
+  <!-- Hamburger Button -->
+  <button class="hamburger" id="hamburgerBtn" onclick="toggleSidebar()" aria-label="Toggle menu">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+
+  <!-- Overlay behind sidebar -->
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+  <div class="container">
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+      <ul>
+
+        <!-- ✅ ALL ROLES -->
+        <li>
+          <a href="dashboard.html">
+            <i class="fas fa-home icon"></i>
+            <span class="text">Dashboard</span>
+          </a>
+        </li>
+
+        <!-- ✅ USER + ADMIN only (hidden from guest) -->
+        <li id="historyTab" data-hide-for-role="guest">
+          <a href="history.html">
+            <i class="fas fa-database icon"></i>
+            <span class="text">Historical Data</span>
+          </a>
+        </li>
+
+        <!-- ✅ USER + ADMIN only (hidden from guest) -->
+        <li id="alertsTab" data-hide-for-role="guest">
+          <a href="alerts.html">
+            <i class="fas fa-bell icon"></i>
+            <span class="text">Alerts</span>
+          </a>
+        </li>
+
+        <!-- ✅ USER + ADMIN only (hidden from guest) -->
+        <li id="reportsTab" class="active" data-hide-for-role="guest">
+          <a href="reports.html">
+            <i class="fas fa-file-alt icon"></i>
+            <span class="text">Reports</span>
+          </a>
+        </li>
+
+        <!-- ✅ ADMIN only -->
+        <li id="systemConfigurationTab" data-role="admin">
+          <a href="systemConfig.html">
+            <i class="fas fa-user-cog icon"></i>
+            <span class="text">User & System</span>
+          </a>
+        </li>
+
+        <!-- ✅ ADMIN only -->
+        <li id="adminDashboardTab" data-role="admin">
+          <a href="admindashboard.html">
+            <i class="fas fa-user-shield icon"></i>
+            <span class="text">Admin</span>
+          </a>
+        </li>
+
+      </ul>
+    </aside>
+
+    <!-- CONTENT -->
+    <main class="content">
+      <!-- ENHANCED TOP STATUS BAR -->
+      <div class="top-status">
+        <!-- Left Section: Branding -->
+        <div class="status-left">
+        <img src="/images/gataw.png" alt="GATAW" style="height:32px; object-fit:contain; filter:brightness(0) ;">
+          <div class="header-text">
+            <div class="header-title">Bangus Pond Monitor</div>
+            <div class="header-location">
+              <i class="fas fa-map-marker-alt"></i>
+              <span>Brgy. Naguilayan Binmaley, Pangasinan</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Section: Status Items -->
+        <div class="status-right">
+          <div class="status-item">
+            <i class="fas fa-wifi"></i>
+            ESP32: <span id="espStatus" class="dot offline"></span>
+          </div>
+          
+          <div class="battery-indicator" id="batteryIndicator">
+            <i class="fas fa-battery-three-quarters"></i>
+            <span id="battery">--%</span>
+          </div>
+
+          <div class="status-item">
+            <i class="fas fa-fan"></i>
+            Aerator: <span id="aeratorStatusText">--</span>
+          </div>
+
+          <div class="status-item">
+            <i class="fas fa-clock"></i>
+            <span id="lastUpdate">--</span>
+          </div>
+
+          <!-- Dark Mode Toggle Button -->
+          <div class="header-theme-toggle">
+            <label class="theme-toggle-switch" title="Toggle dark mode">
+              <input type="checkbox" id="darkModeToggle" onchange="toggleDarkMode()">
+              <span class="theme-toggle-slider">
+                <i class="fas fa-sun theme-icon-sun"></i>
+                <i class="fas fa-moon theme-icon-moon"></i>
+              </span>
+            </label>
+          </div>
+
+          <!-- Profile Dropdown -->
+          <div class="profile-dropdown-container">
+            <div class="profile-trigger" id="profileTrigger">
+              <i class="fas fa-user-circle"></i>
+              <span id="userEmail">Loading...</span>
+              <i class="fas fa-chevron-down dropdown-arrow"></i>
+            </div>
+            
+            <div class="profile-dropdown" id="profileDropdown">
+              <div class="dropdown-header">
+                <div class="dropdown-user-info">
+                  <i class="fas fa-user-circle user-avatar"></i>
+                  <div class="user-details">
+                    <span class="user-name" id="dropdownUserName">Loading...</span>
+                    <span class="user-email-full" id="dropdownUserEmail">Loading...</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="dropdown-divider"></div>
+              
+              <div class="dropdown-menu">
+                <div class="dropdown-item role-item">
+                  <i class="fas fa-id-badge"></i>
+                  <span>Role: <strong id="dropdownUserRole">Loading...</strong></span>
+                </div>
+                
+                <div class="dropdown-divider"></div>
+                
+                <a href="#" class="dropdown-item logout-item" id="logoutBtn">
+                  <i class="fas fa-sign-out-alt"></i>
+                  <span>Logout</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <h1>Water Quality Analytics</h1>
+
+      <!-- Analytics Container -->
+      <div class="analytics-container">
+        
+        <!-- Controls are inside each tab panel -->
+
+        <!-- ============================================
+             PAGE TAB NAVIGATION (3 tabs)
+        ============================================ -->
+        <div class="page-tabs" id="pageTabs">
+
+          <!-- Tab 1: Summary -->
+          <button class="page-tab-btn active" id="tabBtnSummary" onclick="switchPageTab('summary')">
+            <i class="fas fa-chart-bar"></i>
+            Data Summary 
+          </button>
+
+          <!-- Tab 2: Trends -->
+          <button class="page-tab-btn" id="tabBtnTrends" onclick="switchPageTab('trends')">
+            <i class="fas fa-chart-line"></i>
+            Trends
+          </button>
+
+          <!-- Tab 3: Correlation -->
+          <button class="page-tab-btn" id="tabBtnCorrelation" onclick="switchPageTab('correlation')">
+            <i class="fas fa-project-diagram"></i>
+            Correlation
+          </button>
+
+          <!-- Tab 4: Forecast -->
+          <button class="page-tab-btn" id="tabBtnForecast" onclick="switchPageTab('forecast')">
+            <i class="fas fa-binoculars"></i>
+            Forecast
+            <span class="tab-badge" id="forecastBadge">0</span>
+          </button>
+
+        </div>
+
+        <!-- ============================================
+             TAB 1: TRENDS PANEL
+             Contains: Statistical Insights & Patterns + Trend Analysis Over Time
+        ============================================ -->
+        <div class="tab-panel" id="tabPanelTrends">
+
+          <!-- Trends Tab Settings -->
+          <div class="analytics-card" style="margin-bottom: 1.5rem;">
+            <div class="card-header" style="border-bottom: none; margin-bottom: 0.75rem; padding-bottom: 0;">
+              <div class="card-title">
+                <i class="fas fa-sliders-h"></i>
+                Analytics Settings
+              </div>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.25rem; align-items: end;">
+              <div>
+                <label for="trendsTimeRange" style="display: block; font-weight: 600; color: #475569; font-size: 0.9rem; margin-bottom: 0.5rem;">
+                  <i class="fas fa-calendar-alt"></i> Time Range
+                </label>
+                <select id="trendsTimeRange" onchange="loadAnalyticsData()">
+                  <option value="24h">Last 24 Hours</option>
+                  <option value="7d" selected>Last 7 Days</option>
+                  <option value="30d">Last 30 Days</option>
+                  <option value="90d">Last 90 Days</option>
+                </select>
+              </div>
+              <div>
+                <label for="trendsParamFilter" style="display: block; font-weight: 600; color: #475569; font-size: 0.9rem; margin-bottom: 0.5rem;">
+                  <i class="fas fa-filter"></i> Parameter
+                </label>
+                <select id="trendsParamFilter" onchange="updateChartParameter()">
+                  <option value="all" selected>All Parameters</option>
+                  <option value="do">Dissolved Oxygen</option>
+                  <option value="salinity">Salinity</option>
+                  <option value="temperature">Temperature</option>
+                  <option value="ph">pH Level</option>
+                  <option value="turbidity">Turbidity</option>
+                </select>
+              </div>
+              <div>
+                <label for="severityFilter" style="display: block; font-weight: 600; color: #475569; font-size: 0.9rem; margin-bottom: 0.5rem;">
+                  <i class="fas fa-eye"></i> Show Analytics Insights
+                </label>
+                <select id="severityFilter" onchange="updateAnalytics()">
+                  <option value="all" selected>All (Trends &amp; Anomalies)</option>
+                  <option value="anomaly">Anomalies Only</option>
+                  <option value="trend">Trends Only</option>
+                </select>
+              </div>
+              <div style="display: flex; align-items: flex-end;">
+                <button class="refresh-btn" onclick="loadAnalyticsData()" style="width: 100%;">
+                  <i class="fas fa-sync-alt"></i> Refresh
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Statistical Insights Panel (Trends & Anomalies) -->
+          <div class="insights-panel" id="insightsPanel" style="background:none;box-shadow:none;border:1px solid #e2e8f0;">
+            <div class="insights-title">
+              <i class="fas fa-lightbulb"></i>
+              Statistical Insights &amp; Patterns
+            </div>
+            <div class="insights-list" id="insightsList">
+              <div class="loading-state">
+                <div class="loading-spinner"></div>
+                <p>Analyzing water quality patterns...</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Trend Analysis Chart -->
+          <div class="analytics-card">
+            <div class="card-header">
+              <div>
+                <div class="card-title">
+                  <i class="fas fa-chart-line"></i>
+                  Trend Analysis Over Time
+                </div>
+                <div class="card-subtitle">
+                  Track how each parameter changes over your selected time period. Identify daily patterns, trends, and gradual changes.
+                </div>
+              </div>
+              <div class="chart-controls">
+                <button class="active" onclick="changeChartType('line')">Line</button>
+                <button onclick="changeChartType('area')">Area</button>
+              </div>
+            </div>
+            <canvas id="trendChart"></canvas>
+          </div>
+
+        </div><!-- /tabPanelTrends -->
+
+
+        <!-- ============================================
+             TAB 2: CORRELATION PANEL
+             Contains: Multi-Parameter Correlation Chart + Correlation Insights
+        ============================================ -->
+        <div class="tab-panel" id="tabPanelCorrelation">
+
+          <!-- Correlation Tab Settings -->
+          <div class="analytics-card" style="margin-bottom: 1.5rem;">
+            <div class="card-header" style="border-bottom: none; margin-bottom: 0.75rem; padding-bottom: 0;">
+              <div class="card-title">
+                <i class="fas fa-sliders-h"></i>
+                Correlation Settings
+              </div>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.25rem; align-items: end;">
+              <div>
+                <label for="corrTimeRange" style="display: block; font-weight: 600; color: #475569; font-size: 0.9rem; margin-bottom: 0.5rem;">
+                  <i class="fas fa-calendar-alt"></i> Time Range
+                </label>
+                <select id="corrTimeRange" onchange="loadAnalyticsData()">
+                  <option value="24h">Last 24 Hours</option>
+                  <option value="7d" selected>Last 7 Days</option>
+                  <option value="30d">Last 30 Days</option>
+                  <option value="90d">Last 90 Days</option>
+                </select>
+              </div>
+              <div>
+                <label for="correlationThreshold" style="display: block; font-weight: 600; color: #475569; font-size: 0.9rem; margin-bottom: 0.5rem;">
+                  <i class="fas fa-chart-line"></i> Correlation Strength
+                </label>
+                <select id="correlationThreshold" onchange="updateAnalytics()">
+                  <option value="0.3">Show Weak &amp; Above (30%+)</option>
+                  <option value="0.5" selected>Show Moderate &amp; Above (50%+)</option>
+                  <option value="0.7">Show Strong Only (70%+)</option>
+                </select>
+              </div>
+              <div style="display: flex; align-items: flex-end;">
+                <button class="refresh-btn" onclick="loadAnalyticsData()" style="width: 100%;">
+                  <i class="fas fa-sync-alt"></i> Refresh
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Multi-Parameter Correlation Charts -->
+          <div class="analytics-card">
+            <div class="card-header">
+              <div>
+                <div class="card-title">
+                  <i class="fas fa-project-diagram"></i>
+                  Multi-Parameter Correlation Analysis
+                </div>
+                <div class="card-subtitle">
+                  Toggle parameters to filter both chart lines and their correlation insights. Use scroll wheel to zoom, drag to pan.
+                </div>
+              </div>
+
+              <!-- Time window toggles -->
+              <div class="time-window-controls-inline">
+                <div class="checkbox-group-inline">
+                  <label class="checkbox-label-inline">
+                    <input type="checkbox" id="show6h" onchange="toggleTimeWindow('6h')">
+                    <span>6h</span>
+                  </label>
+                  <label class="checkbox-label-inline">
+                    <input type="checkbox" id="show12h" onchange="toggleTimeWindow('12h')">
+                    <span>12h</span>
+                  </label>
+                  <label class="checkbox-label-inline">
+                    <input type="checkbox" id="show24h" onchange="toggleTimeWindow('24h')">
+                    <span>24h</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Parameter filter checkboxes (all checked by default) -->
+            <div class="param-filter-row" id="paramFilterRow">
+              <span class="param-filter-label"><i class="fas fa-sliders-h"></i> Parameters:</span>
+              <div class="param-checkboxes">
+                <label class="param-checkbox-label">
+                  <input type="checkbox" id="paramDO" checked onchange="onParamFilterChange()">
+                  <span class="param-pill param-do">DO</span>
+                </label>
+                <label class="param-checkbox-label">
+                  <input type="checkbox" id="paramSalinity" checked onchange="onParamFilterChange()">
+                  <span class="param-pill param-salinity">Salinity</span>
+                </label>
+                <label class="param-checkbox-label">
+                  <input type="checkbox" id="paramTemperature" checked onchange="onParamFilterChange()">
+                  <span class="param-pill param-temperature">Temperature</span>
+                </label>
+                <label class="param-checkbox-label">
+                  <input type="checkbox" id="paramPH" checked onchange="onParamFilterChange()">
+                  <span class="param-pill param-ph">pH</span>
+                </label>
+                <label class="param-checkbox-label">
+                  <input type="checkbox" id="paramTurbidity" checked onchange="onParamFilterChange()">
+                  <span class="param-pill param-turbidity">Turbidity</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="empty-state" id="emptyStateMessage">
+              <div class="empty-state-icon">📊</div>
+              <h3>No Time Windows Selected</h3>
+              <p>Check one or more time window boxes (6h / 12h / 24h) above to display charts.</p>
+            </div>
+
+            <div class="time-window-section" id="section6h" style="display: none;">
+              <div class="time-window-header">
+                <h3><i class="fas fa-clock"></i> Last 6 Hours (Detailed View)</h3>
+                <span class="data-count" id="count6h">-- readings</span>
+              </div>
+              <canvas id="correlationChart6h"></canvas>
+              <button class="reset-zoom-btn" onclick="resetZoom('6h')">
+                <i class="fas fa-search-minus"></i> Reset Zoom
+              </button>
+            </div>
+
+            <div class="time-window-section" id="section12h" style="display: none;">
+              <div class="time-window-header">
+                <h3><i class="fas fa-clock"></i> Last 12 Hours (Medium View)</h3>
+                <span class="data-count" id="count12h">-- readings</span>
+              </div>
+              <canvas id="correlationChart12h"></canvas>
+              <button class="reset-zoom-btn" onclick="resetZoom('12h')">
+                <i class="fas fa-search-minus"></i> Reset Zoom
+              </button>
+            </div>
+
+            <div class="time-window-section" id="section24h" style="display: none;">
+              <div class="time-window-header">
+                <h3><i class="fas fa-clock"></i> Last 24 Hours (Overview)</h3>
+                <span class="data-count" id="count24h">-- readings</span>
+              </div>
+              <canvas id="correlationChart24h"></canvas>
+              <button class="reset-zoom-btn" onclick="resetZoom('24h')">
+                <i class="fas fa-search-minus"></i> Reset Zoom
+              </button>
+            </div>
+          </div>
+
+          <!-- Correlation Insights Panel (below chart, filtered by selected parameters) -->
+          <div class="insights-panel" id="correlationInsightsPanel">
+            <div class="insights-title">
+              <i class="fas fa-link"></i>
+              Parameter Correlation Insights
+              <span style="font-size:0.78rem; font-weight:500; color:#64748b; margin-left:0.5rem;">
+                — based on selected parameters above
+              </span>
+            </div>
+            <div class="insights-list" id="correlationInsightsList">
+              <div class="loading-state">
+                <div class="loading-spinner"></div>
+                <p>Analyzing correlations...</p>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- /tabPanelCorrelation -->
+
+
+        <!-- ============================================
+             TAB 3: FORECAST PANEL
+             Contains: Parameter Forecast
+        ============================================ -->
+        <div class="tab-panel" id="tabPanelForecast">
+
+          <div class="analytics-card">
+            <div class="card-header" style="border-bottom: none; margin-bottom: 1rem; padding-bottom: 0;">
+              <div>
+                <div class="card-title">
+                  <i class="fas fa-binoculars"></i>
+                  Parameter Forecast
+                </div>
+                <div class="card-subtitle">
+                  Forecasted values based on current trends
+                </div>
+              </div>
+            </div>
+
+            <!-- Forecast Settings Row -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.25rem; padding: 1rem 0 1.25rem; border-bottom: 1px solid #e2e8f0; margin-bottom: 1.25rem;">
+              <!-- Prediction Window -->
+              <div>
+                <label for="predictionWindow" style="display: block; font-weight: 600; color: #475569; font-size: 0.9rem; margin-bottom: 0.5rem;">
+                  <i class="fas fa-clock"></i> Prediction Window
+                </label>
+                <select id="predictionWindow" onchange="updateAnalytics()">
+                  <option value="3">3 Hours Ahead</option>
+                  <option value="6" selected>6 Hours Ahead</option>
+                  <option value="12">12 Hours Ahead</option>
+                  <option value="24">24 Hours Ahead</option>
+                </select>
+              </div>
+
+              <!-- Use Data From Last -->
+              <div>
+                <label for="predictionDataRange" style="display: block; font-weight: 600; color: #475569; font-size: 0.9rem; margin-bottom: 0.5rem;">
+                  <i class="fas fa-database"></i> Use Data From Last
+                </label>
+                <select id="predictionDataRange" onchange="updateAnalytics()">
+                  <option value="24">24 Hours</option>
+                  <option value="48" selected>48 Hours</option>
+                  <option value="168">7 Days</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Forecast content: weak → severe -->
+            <div id="forecastContent">
+              <div class="loading-state">
+                <div class="loading-spinner"></div>
+                <p>Loading forecast data...</p>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- /tabPanelForecast -->
+
+
+        <!-- ============================================
+             TAB 4: SUMMARY PANEL
+             Contains: Min / Avg / Max bar charts per parameter
+                       with date range + time window filter
+        ============================================ -->
+        <div class="tab-panel active" id="tabPanelSummary">
+
+          <!-- Summary Settings Card -->
+          <div class="analytics-card" style="margin-bottom: 1.5rem;">
+            <div class="card-header" style="border-bottom: none; margin-bottom: 0.75rem; padding-bottom: 0;">
+              <div class="card-title">
+                <i class="fas fa-sliders-h"></i>
+                Summary Settings
+              </div>
+            </div>
+
+            <!-- Date + Time filters -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1.25rem; align-items: end; margin-bottom: 1.25rem;">
+              <div>
+                <label for="summaryStartDate" style="display:block;font-weight:600;color:#475569;font-size:0.9rem;margin-bottom:0.5rem;">
+                  <i class="fas fa-calendar-alt"></i> Start Date
+                </label>
+                <input type="date" id="summaryStartDate" style="width:100%;padding:0.45rem 0.75rem;border:1.5px solid #e2e8f0;border-radius:8px;font-family:'Inter',sans-serif;font-size:0.88rem;color:#0f172a;background:#f8fafc;">
+              </div>
+              <div>
+                <label for="summaryEndDate" style="display:block;font-weight:600;color:#475569;font-size:0.9rem;margin-bottom:0.5rem;">
+                  <i class="fas fa-calendar-alt"></i> End Date
+                </label>
+                <input type="date" id="summaryEndDate" style="width:100%;padding:0.45rem 0.75rem;border:1.5px solid #e2e8f0;border-radius:8px;font-family:'Inter',sans-serif;font-size:0.88rem;color:#0f172a;background:#f8fafc;">
+              </div>
+              <div>
+                <label for="summaryStartTime" style="display:block;font-weight:600;color:#475569;font-size:0.9rem;margin-bottom:0.5rem;">
+                  <i class="fas fa-clock"></i> Start Time
+                </label>
+                <input type="time" id="summaryStartTime" value="00:00" style="width:100%;padding:0.45rem 0.75rem;border:1.5px solid #e2e8f0;border-radius:8px;font-family:'Inter',sans-serif;font-size:0.88rem;color:#0f172a;background:#f8fafc;">
+              </div>
+              <div>
+                <label for="summaryEndTime" style="display:block;font-weight:600;color:#475569;font-size:0.9rem;margin-bottom:0.5rem;">
+                  <i class="fas fa-clock"></i> End Time
+                </label>
+                <input type="time" id="summaryEndTime" value="23:59" style="width:100%;padding:0.45rem 0.75rem;border:1.5px solid #e2e8f0;border-radius:8px;font-family:'Inter',sans-serif;font-size:0.88rem;color:#0f172a;background:#f8fafc;">
+              </div>
+              <div style="display:flex;align-items:flex-end;">
+                <button class="refresh-btn" onclick="loadSummaryData()" style="width:100%;">
+                  <i class="fas fa-sync-alt"></i> Refresh
+                </button>
+              </div>
+            </div>
+
+            <!-- Parameter pill checkboxes -->
+            <div class="param-filter-row" id="summaryParamFilterRow" style="border-top:1px solid #e2e8f0;border-bottom:none;padding-top:1rem;padding-bottom:0;margin-bottom:0;">
+              <span class="param-filter-label"><i class="fas fa-sliders-h"></i> Parameters:</span>
+              <div class="param-checkboxes">
+                <label class="param-checkbox-label">
+                  <input type="checkbox" id="summaryParamDO" checked onchange="renderSummaryCharts()">
+                  <span class="param-pill param-do">DO</span>
+                </label>
+                <label class="param-checkbox-label">
+                  <input type="checkbox" id="summaryParamSalinity" checked onchange="renderSummaryCharts()">
+                  <span class="param-pill param-salinity">Salinity</span>
+                </label>
+                <label class="param-checkbox-label">
+                  <input type="checkbox" id="summaryParamTemperature" checked onchange="renderSummaryCharts()">
+                  <span class="param-pill param-temperature">Temperature</span>
+                </label>
+                <label class="param-checkbox-label">
+                  <input type="checkbox" id="summaryParamPH" checked onchange="renderSummaryCharts()">
+                  <span class="param-pill param-ph">pH</span>
+                </label>
+                <label class="param-checkbox-label">
+                  <input type="checkbox" id="summaryParamTurbidity" checked onchange="renderSummaryCharts()">
+                  <span class="param-pill param-turbidity">Turbidity</span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Summary status message -->
+          <div id="summaryStatusMsg" style="display:none;"></div>
+
+          <!-- Charts container — one card per parameter -->
+          <div id="summaryChartsContainer"></div>
+
+        </div><!-- /tabPanelSummary -->
+
+
+      </div><!-- /analytics-container -->
+
+    </main>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/all.min.js"></script>
+
+  <!-- Firebase SDK — ORDER MATTERS -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-messaging.js"></script>
+
+  <!-- Your Firebase Config -->
+  <script src="../js/firebase.js"></script>
+
+  <!-- 1. Auth Guard -->
+  <script src="../js/authguard.js"></script>
+
+<!-- 2. Role Manager -->
+  <script src="../js/rolemanager.js"></script>
+
+<!-- 3. Notifications — must be before auth.js -->
+  <script src="../js/notifications.js"></script>
+
+<!-- 4. Auth -->
+  <script src="../js/auth.js"></script>
+
+<!-- 5. App Logic -->
+  <script src="../js/app.js"></script>
+
+
+  <!-- 5. Page-specific scripts -->
+  <script src="../js/analytics.js"></script>
+  <script src="../js/dashEssentials.js"></script>
+
+
+
+  <script>
