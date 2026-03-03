@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alerts - Bangus Pond Monitor</title>
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome for Icons -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+  />
+
+  <!-- External CSS - Uses same dashboard CSS -->
+  <link rel="stylesheet" href="../css/dashboard.css">
+  
+  <!-- Alerts specific CSS -->
+  <link rel="stylesheet" href="../css/alerts.css">
+
+</head>     
+
+<body>
+  <!-- Loading Overlay -->
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-content">
+      <div class="loading-spinner"></div>
+      <h3 id="loadingText">Loading...</h3>
+    </div>
+  </div>
+
+  <!-- Mode Transition Overlay -->
+  <div class="mode-transition" id="modeTransition"></div>
+  
+  <!-- Stars for dark mode -->
+  <div class="stars" id="starsContainer"></div>
+
+  <!-- Hamburger Button -->
+  <button class="hamburger" id="hamburgerBtn" onclick="toggleSidebar()" aria-label="Toggle menu">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+
+  <!-- Overlay behind sidebar -->
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+  <div class="container">
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+      <ul>
+
+        <!-- ✅ ALL ROLES -->
+        <li>
+          <a href="dashboard.html">
+            <i class="fas fa-home icon"></i>
+            <span class="text">Dashboard</span>
+          </a>
+        </li>
+
+        <!-- ✅ USER + ADMIN only (hidden from guest) -->
+        <li id="historyTab" data-hide-for-role="guest">
+          <a href="history.html">
+            <i class="fas fa-database icon"></i>
+            <span class="text">Historical Data</span>
+          </a>
+        </li>
+
+        <!-- ✅ USER + ADMIN only (hidden from guest) -->
+        <li id="alertsTab" class="active" data-hide-for-role="guest">
+          <a href="alerts.html">
+            <i class="fas fa-bell icon"></i>
+            <span class="text">Alerts</span>
+          </a>
+        </li>
+
+        <!-- ✅ USER + ADMIN only (hidden from guest) -->
+        <li id="reportsTab" data-hide-for-role="guest">
+          <a href="reports.html">
+            <i class="fas fa-file-alt icon"></i>
+            <span class="text">Reports</span>
+          </a>
+        </li>
+
+        <!-- ✅ ADMIN only -->
+        <li id="systemConfigurationTab" data-role="admin">
+          <a href="systemConfig.html">
+            <i class="fas fa-user-cog icon"></i>
+            <span class="text">User & System</span>
+          </a>
+        </li>
+
+        <!-- ✅ ADMIN only -->
+        <li id="adminDashboardTab" data-role="admin">
+          <a href="admindashboard.html">
+            <i class="fas fa-user-shield icon"></i>
+            <span class="text">Admin</span>
+          </a>
+        </li>
+
+      </ul>
+    </aside>
+
+    <!-- CONTENT -->
+    <main class="content">
+      <!-- ENHANCED TOP STATUS BAR -->
+      <div class="top-status">
+        <!-- Left Section: Branding -->
+        <div class="status-left">
+        <img src="../images/gataw.png" alt="GATAW" style="height:32px; object-fit:contain; filter:brightness(0) ;">
+          <div class="header-text">
+            <div class="header-title">Bangus Pond Monitor</div>
+            <div class="header-location">
+              <i class="fas fa-map-marker-alt"></i>
+              <span>Brgy. Naguilayan Binmaley, Pangasinan</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Section: Status Items -->
+        <div class="status-right">
+          <div class="status-item">
+            <i class="fas fa-wifi"></i>
+            ESP32: <span id="espStatus" class="dot offline"></span>
+          </div>
+          
+          <div class="battery-indicator" id="batteryIndicator">
+            <i class="fas fa-battery-three-quarters"></i>
+            <span id="battery">--%</span>
+          </div>
+
+          <div class="status-item">
+            <i class="fas fa-fan"></i>
+            Aerator: <span id="aeratorStatusText">--</span>
+          </div>
+
+          <div class="status-item">
+            <i class="fas fa-clock"></i>
+            <span id="lastUpdate">--</span>
+          </div>
+
+          <!-- Dark Mode Toggle Button -->
+          <div class="header-theme-toggle">
+            <label class="theme-toggle-switch" title="Toggle dark mode">
+              <input type="checkbox" id="darkModeToggle" onchange="toggleDarkMode()">
+              <span class="theme-toggle-slider">
+                <i class="fas fa-sun theme-icon-sun"></i>
+                <i class="fas fa-moon theme-icon-moon"></i>
+              </span>
+            </label>
+          </div>
+
+          <!-- Profile Dropdown -->
+          <div class="profile-dropdown-container">
+            <div class="profile-trigger" id="profileTrigger">
+              <i class="fas fa-user-circle"></i>
+              <span id="userEmail">Loading...</span>
+              <i class="fas fa-chevron-down dropdown-arrow"></i>
+            </div>
+            
+            <div class="profile-dropdown" id="profileDropdown">
+              <div class="dropdown-header">
+                <div class="dropdown-user-info">
+                  <i class="fas fa-user-circle user-avatar"></i>
+                  <div class="user-details">
+                    <span class="user-name" id="dropdownUserName">Loading...</span>
+                    <span class="user-email-full" id="dropdownUserEmail">Loading...</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="dropdown-divider"></div>
+              
+              <div class="dropdown-menu">
+                <!-- Role Display -->
+                <div class="dropdown-item role-item">
+                  <i class="fas fa-id-badge"></i>
+                  <span><strong id="dropdownUserRole">Loading...</strong></span>
+                </div>
+                
+                <div class="dropdown-divider"></div>
+                
+                <!-- Logout Button -->
+                <a href="#" class="dropdown-item logout-item" id="logoutBtn">
+                  <i class="fas fa-sign-out-alt"></i>
+                  <span>Logout</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <h1>Alerts</h1>
+
+      <!-- Tab Navigation -->
+      <div class="alerts-tab-navigation">
+        <button class="alerts-tab-btn active" data-tab="active" onclick="switchTab('active')">
+          <i class="fas fa-exclamation-triangle"></i>
+          Active Alerts
+          <span class="alerts-badge" id="activeAlertsCount">0</span>
+        </button>
+        <button class="alerts-tab-btn" data-tab="alertsHistory" onclick="switchTab('alertsHistory')">
+          <i class="fas fa-history"></i>
+          Alerts History
+        </button>
+      </div>
+
+      <!-- Active Alerts Tab Content -->
+      <div class="alerts-tab-content active" id="activeTab">
+        <!-- Filter Controls -->
+        <div class="alerts-filter-bar">
+          <div class="filter-group">
+            <label for="severityFilter"><i class="fas fa-filter"></i> Severity:</label>
+            <select id="severityFilter" onchange="filterAlerts()">
+              <option value="all">All Severities</option>
+              <option value="critical">Critical</option>
+              <option value="warning">Warning</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label for="parameterFilter"><i class="fas fa-sliders-h"></i> Parameter:</label>
+            <select id="parameterFilter" onchange="filterAlerts()">
+              <option value="all">All Parameters</option>
+              <option value="do">Dissolved Oxygen (DO)</option>
+              <option value="temperature">Temperature</option>
+              <option value="salinity">Salinity</option>
+              <option value="turbidity">Turbidity</option>
+              <option value="ph">pH Level</option>
+            </select>
+          </div>
+
+          <button class="btn-acknowledge-all" onclick="acknowledgeAll()" id="acknowledgeAllBtn" disabled>
+            <i class="fas fa-check-double"></i> Acknowledge All
+          </button>
+        </div>
+
+        <!-- Active Alerts List -->
+        <div class="alerts-list" id="activeAlertsList">
+          <div class="no-alerts">
+            <i class="fas fa-check-circle"></i>
+            <p>No active alerts at this time</p>
+            <span>Your pond water quality is within normal parameters</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Alerts History Tab Content -->
+      <div class="alerts-tab-content" id="alertsHistoryTab">
+        <!-- Date Range Filter -->
+        <div class="alerts-filter-bar">
+          <div class="filter-group">
+            <label for="dateFromFilter"><i class="fas fa-calendar-alt"></i> From:</label>
+            <input type="date" id="dateFromFilter" onchange="filterHistory()">
+          </div>
+
+          <div class="filter-group">
+            <label for="dateToFilter"><i class="fas fa-calendar-alt"></i> To:</label>
+            <input type="date" id="dateToFilter" onchange="filterHistory()">
+          </div>
+
+          <div class="filter-group">
+            <label for="historySeverityFilter"><i class="fas fa-filter"></i> Severity:</label>
+            <select id="historySeverityFilter" onchange="filterHistory()">
+              <option value="all">All Severities</option>
+              <option value="critical">Critical</option>
+              <option value="warning">Warning</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label for="historyParameterFilter"><i class="fas fa-sliders-h"></i> Parameter:</label>
+            <select id="historyParameterFilter" onchange="filterHistory()">
+              <option value="all">All Parameters</option>
+              <option value="do">Dissolved Oxygen (DO)</option>
+              <option value="temperature">Temperature</option>
+              <option value="salinity">Salinity</option>
+              <option value="turbidity">Turbidity</option>
+              <option value="ph">pH Level</option>
+            </select>
+          </div>
+
+          <button class="btn-export" onclick="exportHistory()">
+            <i class="fas fa-download"></i> Export
+          </button>
+        </div>
+
+        <!-- Alerts History List -->
+        <div class="alerts-list" id="historyAlertsList">
+          <div class="no-alerts">
+            <i class="fas fa-inbox"></i>
+            <p>No alert history available</p>
+            <span>Past alerts will appear here once they are acknowledged or resolved</span>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/all.min.js"></script>
+
+<!-- Firebase SDK — ORDER MATTERS -->
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-messaging.js"></script>
+
+<!-- Your Firebase Config -->
+<script src="../js/firebase.js"></script>
+
+<!-- 1. Auth Guard -->
+<script src="../js/authguard.js"></script>
+
+<!-- 2. Role Manager -->
+<script src="../js/rolemanager.js"></script>
+
+<!-- 3. Notifications — must be before auth.js -->
+<script src="../js/notifications.js"></script>
+
+<!-- 4. Auth -->
+<script src="../js/auth.js"></script>
+
+<!-- 5. App Logic -->
+<script src="../js/app.js"></script>
+
+  <!-- 5. Page-specific scripts -->
+  <script src="../js/alerts.js"></script>
+  <script src="../smsAlerts.js"></script>  
+  <script src="../js/dashEssentials.js"></script>
+
+
+</body>
+</html>
