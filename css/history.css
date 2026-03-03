@@ -533,83 +533,22 @@ body.dark .export-loading-content p { color:#e2e8f0; }
   .history-table td:nth-child(n+2) { min-width:88px; }
 }
 
-
-/* ═══════════════════════════════════════════════════════════
-   DATE & TIME INPUT ICON OVERLAY
-   Adds a visible calendar/clock icon inside every input wrapper.
-   Required because mobile browsers (iOS Safari, Android Chrome)
-   do not reliably show the native picker indicator.
-   ═══════════════════════════════════════════════════════════ */
-
-/* Shared icon base — sits on the left side of every input */
-.date-input-wrapper::before,
-.time-input-wrapper::before {
-  content: '';
-  position: absolute;
-  left: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 16px;
-  height: 16px;
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: contain;
-  pointer-events: none;
-  z-index: 2;
-  opacity: 0.55;
-  transition: opacity 0.2s;
-}
-
-/* Calendar icon for date inputs (SVG inline) */
-.date-input-wrapper::before {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='4' width='18' height='18' rx='2' ry='2'/%3E%3Cline x1='16' y1='2' x2='16' y2='6'/%3E%3Cline x1='8' y1='2' x2='8' y2='6'/%3E%3Cline x1='3' y1='10' x2='21' y2='10'/%3E%3C/svg%3E");
-}
-
-/* Clock icon for time inputs (SVG inline) */
-.time-input-wrapper::before {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Cpolyline points='12 6 12 12 16 14'/%3E%3C/svg%3E");
-}
-
-/* Brighter icon on focus */
-.date-input-wrapper:focus-within::before,
-.time-input-wrapper:focus-within::before {
-  opacity: 0.9;
-}
-
-/* Dark mode: use a lighter stroke color */
-body.dark .date-input-wrapper::before {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='4' width='18' height='18' rx='2' ry='2'/%3E%3Cline x1='16' y1='2' x2='16' y2='6'/%3E%3Cline x1='8' y1='2' x2='8' y2='6'/%3E%3Cline x1='3' y1='10' x2='21' y2='10'/%3E%3C/svg%3E");
-}
-
-body.dark .time-input-wrapper::before {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Cpolyline points='12 6 12 12 16 14'/%3E%3C/svg%3E");
-}
-
-/* ── Make the entire input area tappable on mobile ────────── */
-/* Extend the native picker trigger to cover the full input,  */
-/* not just the small icon area browsers normally show.       */
-.date-input-wrapper input[type="date"],
-.time-input-wrapper input[type="time"] {
-  /* Already set elsewhere — just ensuring full width click area */
-  cursor: pointer;
-}
-
-/* On mobile, make sure the native picker still opens on tap */
+/* Show labels on mobile where the native hint is missing */
 @media (max-width: 768px) {
-  .date-input-wrapper input[type="date"],
-  .time-input-wrapper input[type="time"] {
-    /* Force the browser's own picker to be triggered by tapping anywhere */
-    -webkit-appearance: none;
-    appearance: none;
-    /* Ensure text doesn't overlap our custom icon */
-    padding-left: 38px;
+  .date-input-wrapper label,
+  .time-input-wrapper label {
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    color: #94a3b8;
+    margin-bottom: 4px;
+    padding-left: 2px;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
   }
 
-  /* Slightly larger touch target icon on mobile */
-  .date-input-wrapper::before,
-  .time-input-wrapper::before {
-    width: 17px;
-    height: 17px;
-    opacity: 0.65;
+  body.dark .date-input-wrapper label,
+  body.dark .time-input-wrapper label {
+    color: #475569;
   }
 }
