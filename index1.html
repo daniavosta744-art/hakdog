@@ -8,6 +8,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+h1,h2,h3,h4,h5,h6,p { text-decoration:none !important; border-bottom:none !important; }
 :root {
   --bg-deep:#0f172a; --bg-card:rgba(30,41,59,0.85);
   --green:#22c55e; --green-dark:#16a34a; --blue:#0ea5e9;
@@ -28,7 +29,7 @@ body::before, body::after {
 body::before { width:600px; height:600px; top:-200px; left:-200px; background:radial-gradient(circle,rgba(34,197,94,0.08) 0%,transparent 70%); }
 body::after  { width:500px; height:500px; bottom:-150px; right:-150px; background:radial-gradient(circle,rgba(14,165,233,0.08) 0%,transparent 70%); }
 
-/* SPLASH */
+/* ── SPLASH ── */
 #splash {
   position:fixed; inset:0; z-index:9999;
   background:var(--bg-deep);
@@ -36,9 +37,15 @@ body::after  { width:500px; height:500px; bottom:-150px; right:-150px; backgroun
   transition:opacity 0.7s ease;
 }
 #splash.gone { opacity:0; pointer-events:none; }
+
+/* FIX: no text-decoration on splash labels */
+p#s-welcome,
 #s-welcome {
   font-family:'Inter',sans-serif; font-size:clamp(1rem,2vw,1.3rem);
   font-weight:300; color:var(--text-muted); letter-spacing:4px; text-transform:uppercase;
+  text-decoration:none !important;
+  text-decoration-line:none !important;
+  border-bottom:none !important;
   opacity:0; transform:translateY(16px); transition:opacity 0.5s ease, transform 0.5s ease;
 }
 #s-welcome.show { opacity:1; transform:translateY(0); }
@@ -47,17 +54,14 @@ body::after  { width:500px; height:500px; bottom:-150px; right:-150px; backgroun
   font-weight:800; line-height:1; letter-spacing:-2px;
   background:linear-gradient(135deg,var(--green),var(--blue));
   -webkit-background-clip:text; background-clip:text; color:transparent;
+  text-decoration:none;
   opacity:0; transform:translateY(24px); transition:opacity 0.6s ease, transform 0.6s ease;
 }
 #s-gataw.show { opacity:1; transform:translateY(0); }
-#s-bar {
-  width:56px; height:2px; background:linear-gradient(90deg,var(--green),var(--blue));
-  border-radius:2px; opacity:0; transform:scaleX(0); transform-origin:left;
-  transition:opacity 0.4s ease, transform 0.4s ease;
-}
-#s-bar.show { opacity:1; transform:scaleX(1); }
+#s-bar { display:none; }
+#s-bar.show { display:none; }
 
-/* NAVBAR */
+/* ── NAVBAR ── */
 nav {
   position:fixed; top:0; left:0; right:0; height:var(--nav-h);
   background:rgba(15,23,42,0.85); backdrop-filter:blur(16px);
@@ -71,7 +75,6 @@ nav {
 nav.show { opacity:1; transform:translateY(0); pointer-events:all; }
 nav.scrolled { background:rgba(15,23,42,0.98); }
 .nav-brand { display:flex; align-items:center; gap:12px; text-decoration:none; }
-.nav-fish { width:38px; height:38px; }
 .nav-logo-text {
   font-family:'Syne',sans-serif; font-size:1.6rem; font-weight:800;
   background:linear-gradient(90deg,var(--green),var(--blue));
@@ -90,7 +93,7 @@ nav.scrolled { background:rgba(15,23,42,0.98); }
 .hamburger { display:none; flex-direction:column; gap:5px; background:none; border:none; cursor:pointer; padding:4px; }
 .hamburger span { width:24px; height:2px; background:var(--text-sub); border-radius:2px; transition:0.3s; }
 
-/* HOME */
+/* ── HOME ── */
 #home {
   min-height:100vh; display:flex; align-items:center;
   padding:calc(var(--nav-h) + 40px) var(--hero-pad-x) 80px;
@@ -98,20 +101,34 @@ nav.scrolled { background:rgba(15,23,42,0.98); }
 }
 .hero-left { flex:1; display:flex; flex-direction:column; align-items:flex-start; }
 .hero-right { flex:1; display:flex; align-items:center; justify-content:center; }
+
+/* FIX: hero text — no underline, starts hidden, snaps in without fading (prevents flicker) */
+h5.hero-welcome,
 .hero-welcome {
   font-family:'Inter',sans-serif; font-size:1rem; font-weight:300;
   color:var(--text-muted); letter-spacing:3px; text-transform:uppercase;
-  margin-bottom:4px; opacity:0; transition:opacity 0.4s ease;
+  text-decoration:none !important;
+  text-decoration-line:none !important;
+  border-bottom:none !important;
+  margin-bottom:4px;
+  opacity:0;
+  will-change:opacity;
 }
-.hero-welcome.landed { opacity:1; }
+h5.hero-welcome.landed,
+.hero-welcome.landed { opacity:1; transition:none; }
+
 .hero-title {
   font-family:'Syne',sans-serif; font-size:clamp(3.5rem,6vw,5.5rem);
   font-weight:800; line-height:0.95; margin-bottom:20px;
   background:linear-gradient(135deg,var(--green),var(--blue));
   -webkit-background-clip:text; background-clip:text; color:transparent;
-  letter-spacing:-1px; opacity:0; transition:opacity 0.4s ease 0.06s;
+  text-decoration:none;
+  letter-spacing:-1px;
+  opacity:0;
+  will-change:opacity;
 }
-.hero-title.landed { opacity:1; }
+.hero-title.landed { opacity:1; transition:none; }
+
 .hero-subtitle {
   font-family:'Syne',sans-serif; font-size:clamp(1rem,1.8vw,1.2rem);
   color:var(--text-sub); font-weight:600; line-height:1.5;
@@ -163,7 +180,7 @@ nav.scrolled { background:rgba(15,23,42,0.98); }
 }
 @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(5px)} }
 
-/* STICKY SCROLL ZONE */
+/* ── STICKY SCROLL ZONE ── */
 #ss-scroll-zone { position:relative; z-index:1; }
 .ss-sticky-wrap { position:relative; }
 .ss-panel {
@@ -269,7 +286,7 @@ nav.scrolled { background:rgba(15,23,42,0.98); }
 .tech-logo svg,.tech-logo img { width:100%; height:100%; object-fit:contain; }
 .tech-name { font-family:'Syne',sans-serif; font-size:0.82rem; font-weight:700; color:var(--text-sub); text-align:center; line-height:1.2; letter-spacing:0.3px; }
 
-/* ABOUT */
+/* ── ABOUT ── */
 #about { position:relative; z-index:1; overflow:hidden; }
 .section-label {
   display:inline-flex; align-items:center; gap:8px; color:var(--blue);
@@ -284,7 +301,7 @@ nav.scrolled { background:rgba(15,23,42,0.98); }
   border-top:1px solid var(--border); border-bottom:1px solid var(--border);
   padding:100px var(--hero-pad-x);
 }
-.about-problem-inner { max-width: 100%; margin:0 auto; }
+.about-problem-inner { max-width:100%; margin:0 auto; }
 .problem-header { text-align:center; }
 .problem-header .section-label { color:#f97316; justify-content:center; }
 .problem-header .section-label::before { background:#f97316; }
@@ -295,7 +312,7 @@ nav.scrolled { background:rgba(15,23,42,0.98); }
   background:linear-gradient(180deg,rgba(34,197,94,0.02),transparent);
   border-top:1px solid var(--border); padding:100px var(--hero-pad-x);
 }
-.about-team-inner { max-width: 100%; margin:0 auto; }
+.about-team-inner { max-width:100%; margin:0 auto; }
 .team-header { text-align:center; margin-bottom:64px; }
 .team-header .section-label { justify-content:center; }
 .team-header .section-desc { margin:12px auto 0; text-align:center; max-width:100%; }
@@ -381,7 +398,7 @@ nav.scrolled { background:rgba(15,23,42,0.98); }
   background:linear-gradient(180deg,transparent,rgba(14,165,233,0.03));
   border-top:1px solid var(--border); padding:80px var(--hero-pad-x);
 }
-.about-partners-inner { max-width: 100%; margin:0 auto; }
+.about-partners-inner { max-width:100%; margin:0 auto; }
 .partners-header { text-align:center; margin-bottom:56px; }
 .partners-header .section-label { justify-content:center; }
 .partners-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; margin-bottom:48px; }
@@ -406,7 +423,7 @@ nav.scrolled { background:rgba(15,23,42,0.98); }
 .ack-box p { color:var(--text-muted); font-size:0.92rem; line-height:1.8; font-weight:300; }
 .ack-box p strong { color:var(--text); font-weight:500; }
 
-/* CONTACT */
+/* ── CONTACT ── */
 #contact { padding:100px var(--hero-pad-x); background:linear-gradient(180deg,transparent,rgba(14,165,233,0.03)); position:relative; z-index:1; }
 .contact-inner { max-width:1300px; margin:0 auto; display:grid; grid-template-columns:1fr 1fr; gap:56px; align-items:start; }
 .contact-left .section-desc { margin-bottom:32px; }
@@ -433,10 +450,10 @@ nav.scrolled { background:rgba(15,23,42,0.98); }
 }
 .btn-send:hover { transform:translateY(-2px); box-shadow:0 6px 24px rgba(34,197,94,0.35); }
 
-/* FOOTER */
+/* ── FOOTER ── */
 footer { position:relative; z-index:1; background:rgba(15,23,42,0.95); border-top:1px solid var(--border); padding:40px 48px 24px; }
 .footer-inner {
-  max-width: 100%; margin:0 auto; display:flex; justify-content:space-between;
+  max-width:100%; margin:0 auto; display:flex; justify-content:space-between;
   align-items:center; flex-wrap:wrap; gap:20px;
   padding-bottom:24px; border-bottom:1px solid var(--border); margin-bottom:20px;
 }
@@ -448,17 +465,14 @@ footer { position:relative; z-index:1; background:rgba(15,23,42,0.95); border-to
 .footer-nav a:hover { color:var(--text); }
 .footer-copy { max-width:1100px; margin:0 auto; text-align:center; color:var(--text-muted); font-size:0.8rem; }
 
+/* ── REVEAL ON SCROLL ── */
 .reveal {
-  opacity: 0;
-  transform: translateY(36px);
-  transition: opacity  0.7s cubic-bezier(0.22, 1, 0.36, 1),
-              transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  opacity:0; transform:translateY(36px);
+  transition:opacity 0.7s cubic-bezier(0.22,1,0.36,1), transform 0.7s cubic-bezier(0.22,1,0.36,1);
 }
-.reveal.is-visible {
-  opacity: 1;
-  transform: translateY(0);
-}
+.reveal.is-visible { opacity:1; transform:translateY(0); }
 
+/* ── PANEL REVEAL ── */
 .ss-panel .ss-eyebrow,
 .ss-panel .ss-heading,
 .ss-panel .ss-desc,
@@ -488,25 +502,49 @@ footer { position:relative; z-index:1; background:rgba(15,23,42,0.95); border-to
 #techPanel.panel-revealed .ss-heading { opacity:1; transform:translateY(0); transition-delay:100ms; }
 #techPanel.panel-revealed .ss-desc    { opacity:1; transform:translateY(0); transition-delay:200ms; }
 
+/* ── RESPONSIVE ── */
 @media (max-width:900px) { :root { --hero-pad-x:32px; } }
+
 @media (max-width:768px) {
   :root { --hero-pad-x:20px; }
-  #home { min-height:auto; padding-bottom:60px; }
+
+  /* Stack hero vertically on mobile */
+  #home {
+    min-height:100svh;
+    flex-direction:column;
+    align-items:flex-start;
+    padding-top:calc(var(--nav-h) + 32px);
+    padding-bottom:48px;
+    gap:32px;
+  }
+  .hero-left { width:100%; }
+  .hero-right { width:100%; justify-content:center; }
+  /* No horizontal slide on mobile — just fade in */
+  .hero-img { max-width:260px; transform:none; }
+  .hero-img.show { transform:none; }
+
   nav { padding:0 20px; }
-  .nav-links { display:none; position:absolute; top:var(--nav-h); left:0; right:0; background:rgba(15,23,42,0.98); flex-direction:column; padding:16px; border-bottom:1px solid var(--border); gap:4px; }
+  .nav-links {
+    display:none; position:absolute; top:var(--nav-h); left:0; right:0;
+    background:rgba(15,23,42,0.98); flex-direction:column;
+    padding:16px; border-bottom:1px solid var(--border); gap:4px;
+  }
   .nav-links.open { display:flex; }
   .nav-links a { padding:12px 16px; border-radius:8px; }
   .hamburger { display:flex; }
+
+  /* Disable sticky scroll on mobile */
   .ss-sticky-wrap { height:auto !important; }
   .ss-panel { position:relative; height:auto; padding:60px 0; }
   .ss-inner { flex-direction:column; gap:32px; }
-  .ss-right { height:auto; min-height:340px; }
+  .ss-right { height:auto; min-height:300px; }
   .ss-cards-viewport { position:relative; height:auto; min-height:300px; }
   .ss-card { position:relative; opacity:1 !important; transform:none !important; }
   .ss-card + .ss-card { display:none; }
+
   .tech-grid { grid-template-columns:repeat(2,1fr); }
   .team-grid { grid-template-columns:1fr; }
-  .about-mv { grid-template-columns:1fr; }
+  .about-mv  { grid-template-columns:1fr; }
   .partners-grid { grid-template-columns:1fr; }
   .contact-inner { grid-template-columns:1fr; }
 }
@@ -619,143 +657,92 @@ footer { position:relative; z-index:1; background:rgba(15,23,42,0.95); border-to
     </div>
   </div>
 
-<!-- ── THE TEAM ── -->
-<div class="about-team" id="about-team">
-  <div class="about-team-inner">
-
-    <div class="team-header reveal">
-      <div class="section-label">The Team</div>
-      <h2 class="section-title">The people behind GATAW.</h2>
-      <p class="section-desc">
-        We are Computer Engineering students who developed GATAW as our capstone project. Our goal is to provide an accessible and reliable water quality monitoring system to help Bangus farmers reduce preventable fish kill incidents through real-time data and practical engineering solutions.
-      </p>
-    </div>
-
-    <div class="team-grid">
-
-      <!-- B1 -->
-      <div class="team-card reveal" data-delay="0">
-        <div class="team-avatar">
-          <div class="team-avatar-icon">
-            <i class="fas fa-user"></i>
-          </div>
-          <div class="team-initials"><span>JD</span></div>
-        </div>
-        <div class="team-info">
-          <h3>Juan dela Cruz</h3>
-          <div class="team-role">
-            <i class="fas fa-circle-dot" style="font-size:0.5em"></i>
-            Buoy Design & Assembly
-          </div>
-          <p>
-            Co-designed and assembled the buoy structure, ensuring proper enclosure, component placement, and overall structural stability for field deployment.
-          </p>
-        </div>
+  <div class="about-team" id="about-team">
+    <div class="about-team-inner">
+      <div class="team-header reveal">
+        <div class="section-label">The Team</div>
+        <h2 class="section-title">The people behind GATAW.</h2>
+        <p class="section-desc">
+          We are Computer Engineering students who developed GATAW as our capstone project. Our goal is to provide an accessible and reliable water quality monitoring system to help Bangus farmers reduce preventable fish kill incidents through real-time data and practical engineering solutions.
+        </p>
       </div>
+      <div class="team-grid">
 
-      <!-- B2 -->
-      <div class="team-card reveal" data-delay="100">
-        <div class="team-avatar">
-          <div class="team-avatar-icon">
-            <i class="fas fa-user"></i>
+        <div class="team-card reveal" data-delay="0">
+          <div class="team-avatar">
+            <div class="team-avatar-icon"><i class="fas fa-user"></i></div>
+            <div class="team-initials"><span>JD</span></div>
           </div>
-          <div class="team-initials"><span>MS</span></div>
-        </div>
-        <div class="team-info">
-          <h3>Maria Santos</h3>
-          <div class="team-role">
-            <i class="fas fa-circle-dot" style="font-size:0.5em"></i>
-            Web Development & Alerts
+          <div class="team-info">
+            <h3>Juan dela Cruz</h3>
+            <div class="team-role"><i class="fas fa-circle-dot" style="font-size:0.5em"></i> Buoy Design & Assembly</div>
+            <p>Co-designed and assembled the buoy structure, ensuring proper enclosure, component placement, and overall structural stability for field deployment.</p>
           </div>
-          <p>
-            Developed the monitoring website and implemented the threshold-based alert system to notify users when water parameters exceed safe ranges.
-          </p>
         </div>
+
+        <div class="team-card reveal" data-delay="100">
+          <div class="team-avatar">
+            <div class="team-avatar-icon"><i class="fas fa-user"></i></div>
+            <div class="team-initials"><span>MS</span></div>
+          </div>
+          <div class="team-info">
+            <h3>Maria Santos</h3>
+            <div class="team-role"><i class="fas fa-circle-dot" style="font-size:0.5em"></i> Web Development & Alerts</div>
+            <p>Developed the monitoring website and implemented the threshold-based alert system to notify users when water parameters exceed safe ranges.</p>
+          </div>
+        </div>
+
+        <div class="team-card reveal" data-delay="200">
+          <div class="team-avatar">
+            <div class="team-avatar-icon"><i class="fas fa-user"></i></div>
+            <div class="team-initials"><span>AR</span></div>
+          </div>
+          <div class="team-info">
+            <h3>Angelo Reyes</h3>
+            <div class="team-role"><i class="fas fa-circle-dot" style="font-size:0.5em"></i> Hardware & Circuit Design</div>
+            <p>Designed the circuit schematic, integrated sensors and microcontrollers, and conducted system testing and troubleshooting to ensure stable performance.</p>
+          </div>
+        </div>
+
+        <div class="team-card reveal" data-delay="0">
+          <div class="team-avatar">
+            <div class="team-avatar-icon"><i class="fas fa-user"></i></div>
+            <div class="team-initials"><span>CL</span></div>
+          </div>
+          <div class="team-info">
+            <h3>Carla Lim</h3>
+            <div class="team-role"><i class="fas fa-circle-dot" style="font-size:0.5em"></i> Hardware Integration & Buoy Design</div>
+            <p>Co-designed the buoy structure and assisted in hardware integration, schematic refinement, and troubleshooting to improve overall system reliability.</p>
+          </div>
+        </div>
+
+        <div class="team-card reveal" data-delay="100">
+          <div class="team-avatar">
+            <div class="team-avatar-icon"><i class="fas fa-user"></i></div>
+            <div class="team-initials"><span>BT</span></div>
+          </div>
+          <div class="team-info">
+            <h3>Ben Torres</h3>
+            <div class="team-role"><i class="fas fa-circle-dot" style="font-size:0.5em"></i> CAD Design & Technical Drawings</div>
+            <p>Created the AutoCAD models and detailed technical drawings of the buoy structure and internal layout for fabrication and documentation.</p>
+          </div>
+        </div>
+
+        <div class="team-card reveal" data-delay="200">
+          <div class="team-avatar">
+            <div class="team-avatar-icon"><i class="fas fa-user"></i></div>
+            <div class="team-initials"><span>NV</span></div>
+          </div>
+          <div class="team-info">
+            <h3>Nene Villanueva</h3>
+            <div class="team-role"><i class="fas fa-circle-dot" style="font-size:0.5em"></i> Capstone Adviser</div>
+            <p>Provided academic supervision, technical guidance, and research direction throughout the design, implementation, and validation of the GATAW system.</p>
+          </div>
+        </div>
+
       </div>
-
-      <!-- B3 -->
-      <div class="team-card reveal" data-delay="200">
-        <div class="team-avatar">
-          <div class="team-avatar-icon">
-            <i class="fas fa-user"></i>
-          </div>
-          <div class="team-initials"><span>AR</span></div>
-        </div>
-        <div class="team-info">
-          <h3>Angelo Reyes</h3>
-          <div class="team-role">
-            <i class="fas fa-circle-dot" style="font-size:0.5em"></i>
-            Hardware & Circuit Design
-          </div>
-          <p>
-            Designed the circuit schematic, integrated sensors and microcontrollers, and conducted system testing and troubleshooting to ensure stable performance.
-          </p>
-        </div>
-      </div>
-
-      <!-- B4 -->
-      <div class="team-card reveal" data-delay="0">
-        <div class="team-avatar">
-          <div class="team-avatar-icon">
-            <i class="fas fa-user"></i>
-          </div>
-          <div class="team-initials"><span>CL</span></div>
-        </div>
-        <div class="team-info">
-          <h3>Carla Lim</h3>
-          <div class="team-role">
-            <i class="fas fa-circle-dot" style="font-size:0.5em"></i>
-            Hardware Integration & Buoy Design
-          </div>
-          <p>
-            Co-designed the buoy structure and assisted in hardware integration, schematic refinement, and troubleshooting to improve overall system reliability.
-          </p>
-        </div>
-      </div>
-
-      <!-- B5 -->
-      <div class="team-card reveal" data-delay="100">
-        <div class="team-avatar">
-          <div class="team-avatar-icon">
-            <i class="fas fa-user"></i>
-          </div>
-          <div class="team-initials"><span>BT</span></div>
-        </div>
-        <div class="team-info">
-          <h3>Ben Torres</h3>
-          <div class="team-role">
-            <i class="fas fa-circle-dot" style="font-size:0.5em"></i>
-            CAD Design & Technical Drawings
-          </div>
-          <p>
-            Created the AutoCAD models and detailed technical drawings of the buoy structure and internal layout for fabrication and documentation.
-          </p>
-        </div>
-      </div>
-
-      <!-- B6 -->
-      <div class="team-card reveal" data-delay="200">
-        <div class="team-avatar">
-          <div class="team-avatar-icon">
-            <i class="fas fa-user"></i>
-          </div>
-          <div class="team-initials"><span>NV</span></div>
-        </div>
-        <div class="team-info">
-          <h3>Nene Villanueva</h3>
-          <div class="team-role">
-            <i class="fas fa-circle-dot" style="font-size:0.5em"></i>
-            Capstone Adviser
-          </div>
-          <p>
-            Provided academic supervision, technical guidance, and research direction throughout the design, implementation, and validation of the GATAW system.
-          </p>
-        </div>
-      </div>
-
     </div>
   </div>
-</div>
 
   <div class="about-timeline">
     <div class="timeline-header reveal">
@@ -772,7 +759,7 @@ footer { position:relative; z-index:1; background:rgba(15,23,42,0.95); border-to
         <div class="tl-dot done"></div>
         <div class="tl-phase">Phase 2 — December 2025</div>
         <div class="tl-body"><h3>Hardware Procurement</h3><p>Sourced and verified all sensors, microcontrollers, and electronic components for compatibility and quality.</p><span class="tl-badge"><i class="fas fa-check" style="font-size:0.7em"></i> Completed</span></div>
-      </div>      
+      </div>
       <div class="tl-item reveal" data-delay="160">
         <div class="tl-dot done"></div>
         <div class="tl-phase">Phase 3 — December 2025</div>
@@ -787,7 +774,7 @@ footer { position:relative; z-index:1; background:rgba(15,23,42,0.95); border-to
         <div class="tl-dot done"></div>
         <div class="tl-phase">Phase 5 — January 2026</div>
         <div class="tl-body"><h3>Power System Procurement</h3><p>Sourced solar panels, batteries, and charge controllers; verified all components before final assembly.</p><span class="tl-badge"><i class="fas fa-check" style="font-size:0.7em"></i> Completed</span></div>
-      </div>      
+      </div>
       <div class="tl-item reveal" data-delay="400">
         <div class="tl-dot done"></div>
         <div class="tl-phase">Phase 6 — January 2026</div>
@@ -797,12 +784,12 @@ footer { position:relative; z-index:1; background:rgba(15,23,42,0.95); border-to
         <div class="tl-dot done"></div>
         <div class="tl-phase">Phase 7 — January 2026</div>
         <div class="tl-body"><h3>Sensor Calibration & Testing</h3><p>Calibrated all sensors against known standards; confirmatory testing conducted at BFAR facilities.</p><span class="tl-badge"><i class="fas fa-check" style="font-size:0.7em"></i> Completed</span></div>
-      </div>      
+      </div>
       <div class="tl-item reveal" data-delay="480">
         <div class="tl-dot done"></div>
         <div class="tl-phase">Phase 8 — January 2026</div>
         <div class="tl-body"><h3>Buoy Component Procurement</h3><p>Sourced floatation materials, waterproof enclosures, and mounting hardware for the buoy assembly.</p><span class="tl-badge"><i class="fas fa-check" style="font-size:0.7em"></i> Completed</span></div>
-      </div>      
+      </div>
       <div class="tl-item reveal" data-delay="560">
         <div class="tl-dot done"></div>
         <div class="tl-phase">Phase 9 — February 2026</div>
@@ -812,12 +799,12 @@ footer { position:relative; z-index:1; background:rgba(15,23,42,0.95); border-to
         <div class="tl-dot done"></div>
         <div class="tl-phase">Phase 10 — February 2026</div>
         <div class="tl-body"><h3>Full System Integration</h3><p>Integrated electronics, floatation, enclosures, solar power, and web platform into a single unified system.</p><span class="tl-badge"><i class="fas fa-check" style="font-size:0.7em"></i> Completed</span></div>
-      </div>                                   
+      </div>
       <div class="tl-item reveal" data-delay="560">
         <div class="tl-dot done"></div>
         <div class="tl-phase">Phase 11 — February 2026</div>
-        <div class="tl-body"><h3>Field Deployment & Validation</h3><p>Prototype deployed in Brgy. Naguilayan, Brgy. Naguilayan Binmaley, Pangasinan to validate sensor calibration, alert accuracy, and reliability under real operating conditions.</p><span class="tl-badge"><i class="fas fa-check" style="font-size:0.7em"></i> Completed</span></div>
-      </div>            
+        <div class="tl-body"><h3>Field Deployment & Validation</h3><p>Prototype deployed in Brgy. Naguilayan, Binmaley, Pangasinan to validate sensor calibration, alert accuracy, and reliability under real operating conditions.</p><span class="tl-badge"><i class="fas fa-check" style="font-size:0.7em"></i> Completed</span></div>
+      </div>
       <div class="tl-item reveal" data-delay="400">
         <div class="tl-dot" style="border-color:var(--blue);box-shadow:0 0 0 4px rgba(14,165,233,0.1)"></div>
         <div class="tl-phase">Phase 12 — 2026</div>
@@ -879,9 +866,7 @@ footer { position:relative; z-index:1; background:rgba(15,23,42,0.95); border-to
   <div class="footer-inner">
     <div class="footer-brand">
       <img src="images/gataw.png" alt="GATAW" style="height:32px; object-fit:contain; filter:brightness(0) invert(1);">
-      <div>
-        <p>Aquaculture Monitoring System</p>
-      </div>
+      <div><p>Aquaculture Monitoring System</p></div>
     </div>
     <ul class="footer-nav">
       <li><a href="#home">Home</a></li>
@@ -896,51 +881,122 @@ footer { position:relative; z-index:1; background:rgba(15,23,42,0.95); border-to
 
 <script>
 /* ─── SPLASH ─── */
-var splashEl=document.getElementById('splash'),
-    sWelcome=document.getElementById('s-welcome'),
-    sGataw=document.getElementById('s-gataw'),
-    sBar=document.getElementById('s-bar'),
-    navbar=document.getElementById('navbar'),
-    heroWelcome=document.getElementById('heroWelcome'),
-    heroTitle=document.getElementById('heroTitle'),
-    heroImage=document.getElementById('heroImage'),
-    heroSubtitle=document.getElementById('heroSubtitle'),
-    heroCta=document.getElementById('heroCta'),
-    scrollHint=document.getElementById('scrollHint');
+var splashEl    = document.getElementById('splash');
+var sWelcome    = document.getElementById('s-welcome');
+var sGataw      = document.getElementById('s-gataw');
+var sBar        = document.getElementById('s-bar');
+var navbar      = document.getElementById('navbar');
+var heroWelcome = document.getElementById('heroWelcome');
+var heroTitle   = document.getElementById('heroTitle');
+var heroImage   = document.getElementById('heroImage');
+var heroSubtitle= document.getElementById('heroSubtitle');
+var heroCta     = document.getElementById('heroCta');
+var scrollHint  = document.getElementById('scrollHint');
 
-setTimeout(function(){ sWelcome.classList.add('show'); }, 300);
-setTimeout(function(){ sGataw.classList.add('show'); }, 1300);
-setTimeout(function(){ sBar.classList.add('show'); }, 1900);
-setTimeout(function(){
-  var fromW=sWelcome.getBoundingClientRect(), fromG=sGataw.getBoundingClientRect();
-  var toW=heroWelcome.getBoundingClientRect(), toG=heroTitle.getBoundingClientRect();
-  var scaleW=parseFloat(window.getComputedStyle(heroWelcome).fontSize)/parseFloat(window.getComputedStyle(sWelcome).fontSize);
-  var scaleG=parseFloat(window.getComputedStyle(heroTitle).fontSize)/parseFloat(window.getComputedStyle(sGataw).fontSize);
-  sWelcome.style.cssText+=';position:fixed;top:'+fromW.top+'px;left:'+fromW.left+'px;margin:0;transform-origin:top left;z-index:9998';
-  sGataw.style.cssText+=';position:fixed;top:'+fromG.top+'px;left:'+fromG.left+'px;margin:0;transform-origin:top left;z-index:9998';
-  sBar.style.opacity='0';
-  splashEl.style.transition='background 0.5s ease';
-  splashEl.style.background='transparent';
-  splashEl.style.pointerEvents='none';
+var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+if (prefersReduced) {
+  /* Skip animation entirely for accessibility */
+  splashEl.classList.add('gone');
   navbar.classList.add('show');
-  if(heroImage) heroImage.classList.add('show');
+  heroWelcome.classList.add('landed');
+  heroTitle.classList.add('landed');
   heroSubtitle.classList.add('show');
-  requestAnimationFrame(function(){ requestAnimationFrame(function(){
-    var ease='cubic-bezier(0.65,0,0.25,1)', dur=850;
-    sWelcome.style.transition='transform '+dur+'ms '+ease;
-    sWelcome.style.transform='translate('+(toW.left-fromW.left)+'px,'+(toW.top-fromW.top)+'px) scale('+scaleW+')';
-    sGataw.style.transition='transform '+dur+'ms 40ms '+ease;
-    sGataw.style.transform='translate('+(toG.left-fromG.left)+'px,'+(toG.top-fromG.top)+'px) scale('+scaleG+')';
-    setTimeout(function(){
-      heroWelcome.classList.add('landed');
-      heroTitle.classList.add('landed');
-      sWelcome.style.opacity='0';
-      sGataw.style.opacity='0';
+  heroCta.classList.add('show');
+  if (heroImage) heroImage.classList.add('show');
+  scrollHint.classList.add('show');
+
+} else {
+
+  /* Step 1: animate splash text in */
+  setTimeout(function(){ sWelcome.classList.add('show'); }, 300);
+  setTimeout(function(){ sGataw.classList.add('show'); }, 1300);
+  setTimeout(function(){ sBar.classList.add('show'); }, 1900);
+
+  /* Step 2: fly text to hero position (desktop) or simple fade (mobile) */
+  setTimeout(function(){
+
+    var isMobile = window.innerWidth < 768;
+
+    if (isMobile) {
+      /* ── MOBILE: no coordinate math — just fade splash out, reveal hero in place ── */
       splashEl.classList.add('gone');
-      setTimeout(function(){ heroCta.classList.add('show'); scrollHint.classList.add('show'); }, 300);
-    }, dur+60);
-  }); });
-}, 2800);
+      navbar.classList.add('show');
+      if (heroImage) heroImage.classList.add('show');
+      heroSubtitle.classList.add('show');
+      setTimeout(function(){
+        heroWelcome.classList.add('landed');
+        heroTitle.classList.add('landed');
+      }, 200);
+      setTimeout(function(){
+        heroCta.classList.add('show');
+        scrollHint.classList.add('show');
+      }, 500);
+      return;
+    }
+
+    /* ── DESKTOP: positional fly animation ── */
+    var fromW = sWelcome.getBoundingClientRect();
+    var fromG = sGataw.getBoundingClientRect();
+    var toW   = heroWelcome.getBoundingClientRect();
+    var toG   = heroTitle.getBoundingClientRect();
+
+    var scaleW = parseFloat(window.getComputedStyle(heroWelcome).fontSize) /
+                 parseFloat(window.getComputedStyle(sWelcome).fontSize);
+    var scaleG = parseFloat(window.getComputedStyle(heroTitle).fontSize) /
+                 parseFloat(window.getComputedStyle(sGataw).fontSize);
+
+    /* Pin clones with will-change so GPU handles transform — opacity stays 1 throughout */
+    sWelcome.style.cssText += ';position:fixed;top:' + fromW.top + 'px;left:' + fromW.left + 'px;'
+      + 'margin:0;transform-origin:top left;z-index:9998;will-change:transform;';
+    sGataw.style.cssText += ';position:fixed;top:' + fromG.top + 'px;left:' + fromG.left + 'px;'
+      + 'margin:0;transform-origin:top left;z-index:9998;will-change:transform;';
+
+    sBar.style.opacity = '0';
+
+    /* Fade out splash background so hero shows through while flying */
+    splashEl.style.transition   = 'background 0.5s ease';
+    splashEl.style.background   = 'transparent';
+    splashEl.style.pointerEvents= 'none';
+
+    navbar.classList.add('show');
+    if (heroImage) heroImage.classList.add('show');
+    heroSubtitle.classList.add('show');
+
+    requestAnimationFrame(function(){ requestAnimationFrame(function(){
+      var ease = 'cubic-bezier(0.65,0,0.25,1)';
+      var dur  = 850;
+
+      sWelcome.style.transition = 'transform ' + dur + 'ms ' + ease;
+      sWelcome.style.transform  = 'translate(' + (toW.left - fromW.left) + 'px,'
+                                + (toW.top - fromW.top) + 'px) scale(' + scaleW + ')';
+
+      sGataw.style.transition = 'transform ' + dur + 'ms 40ms ' + ease;
+      sGataw.style.transform  = 'translate(' + (toG.left - fromG.left) + 'px,'
+                              + (toG.top - fromG.top) + 'px) scale(' + scaleG + ')';
+
+      setTimeout(function(){
+        /* FIX: reveal hero text FIRST, then hide clones in the next paint frame.
+           This closes the 1-frame gap that caused the flicker. */
+        heroWelcome.classList.add('landed');
+        heroTitle.classList.add('landed');
+
+        requestAnimationFrame(function(){
+          sWelcome.style.opacity = '0';
+          sGataw.style.opacity   = '0';
+          splashEl.classList.add('gone');
+        });
+
+        setTimeout(function(){
+          heroCta.classList.add('show');
+          scrollHint.classList.add('show');
+        }, 300);
+
+      }, dur + 60);
+    }); });
+
+  }, 2800);
+}
 
 /* ─── STICKY SCROLL ZONE ─── */
 (function(){
@@ -976,163 +1032,156 @@ setTimeout(function(){
     {name:'IBM SPSS',accent:'linear-gradient(135deg,#1f70c1,#0f4c8a)',bg:'#1F70C122',svg:'<svg viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg"><rect width="128" height="128" rx="16" fill="#1F70C1"/><text x="50%" y="52" dominant-baseline="middle" text-anchor="middle" font-family="Arial,sans-serif" font-size="36" font-weight="900" fill="white">IBM</text><text x="50%" y="90" dominant-baseline="middle" text-anchor="middle" font-family="Arial,sans-serif" font-size="28" font-weight="700" fill="white" opacity="0.9">SPSS</text></svg>'}
   ];
 
-  var kfWrap=document.getElementById('kfWrap'), snWrap=document.getElementById('snWrap'), techWrap=document.getElementById('techWrap');
-  kfWrap.style.height='calc(100vh + '+(KEY_FEATURES.length*STEP_PX)+'px)';
-  snWrap.style.height='calc(100vh + '+(SENSORS.length*STEP_PX)+'px)';
-  techWrap.style.height='calc(100vh + 200px)';
+  var kfWrap   = document.getElementById('kfWrap');
+  var snWrap   = document.getElementById('snWrap');
+  var techWrap = document.getElementById('techWrap');
+  kfWrap.style.height   = 'calc(100vh + ' + (KEY_FEATURES.length * STEP_PX) + 'px)';
+  snWrap.style.height   = 'calc(100vh + ' + (SENSORS.length * STEP_PX) + 'px)';
+  techWrap.style.height = 'calc(100vh + 200px)';
 
-  TECHS.forEach(function(t,i){
-    var div=document.createElement('div');
-    div.className='tech-item';
-    div.style.setProperty('--i',i);
-    div.style.setProperty('--tech-accent',t.accent);
-    var logo=t.svg
-      ? '<div class="tech-logo" style="background:'+t.bg+';border-radius:10px;padding:6px;">'+t.svg+'</div>'
-      : '<div class="tech-logo" style="background:'+t.bg+';border-radius:10px;padding:6px;"><img src="'+t.src+'" alt="'+t.name+'" width="36" height="36" loading="lazy"></div>';
-    div.innerHTML=logo+'<div class="tech-name">'+t.name+'</div>';
+  TECHS.forEach(function(t, i){
+    var div = document.createElement('div');
+    div.className = 'tech-item';
+    div.style.setProperty('--i', i);
+    div.style.setProperty('--tech-accent', t.accent);
+    var logo = t.svg
+      ? '<div class="tech-logo" style="background:' + t.bg + ';border-radius:10px;padding:6px;">' + t.svg + '</div>'
+      : '<div class="tech-logo" style="background:' + t.bg + ';border-radius:10px;padding:6px;"><img src="' + t.src + '" alt="' + t.name + '" width="36" height="36" loading="lazy"></div>';
+    div.innerHTML = logo + '<div class="tech-name">' + t.name + '</div>';
     document.getElementById('techGrid').appendChild(div);
   });
 
-  function buildCards(container,data){
+  function buildCards(container, data){
     return data.map(function(f){
-      var c=document.createElement('div');
-      c.className='ss-card';
-      c.style.setProperty('--card-accent',f.accent);
-      c.innerHTML='<div class="ss-card-top"><div class="ss-card-icon"><i class="'+f.icon+'"></i></div></div>'
-        +'<div class="ss-card-body"><h3>'+f.title+'</h3><p>'+f.desc+'</p></div>'
-        +'<div class="ss-card-footer"><span class="ss-card-tag"><i class="fas fa-circle-dot" style="font-size:0.6em"></i> '+f.tag+'</span></div>';
+      var c = document.createElement('div');
+      c.className = 'ss-card';
+      c.style.setProperty('--card-accent', f.accent);
+      c.innerHTML = '<div class="ss-card-top"><div class="ss-card-icon"><i class="' + f.icon + '"></i></div></div>'
+        + '<div class="ss-card-body"><h3>' + f.title + '</h3><p>' + f.desc + '</p></div>'
+        + '<div class="ss-card-footer"><span class="ss-card-tag"><i class="fas fa-circle-dot" style="font-size:0.6em"></i> ' + f.tag + '</span></div>';
       container.appendChild(c);
       return c;
     });
   }
 
-  function buildDots(container,count){
-    var dots=[];
-    for(var i=0;i<count;i++){
-      var d=document.createElement('div');
-      d.className='ss-dot'+(i===0?' active':'');
+  function buildDots(container, count){
+    var dots = [];
+    for (var i = 0; i < count; i++){
+      var d = document.createElement('div');
+      d.className = 'ss-dot' + (i === 0 ? ' active' : '');
       container.appendChild(d);
       dots.push(d);
     }
     return dots;
   }
 
-  var kfCards=buildCards(document.getElementById('kfCards'),KEY_FEATURES);
-  var snCards=buildCards(document.getElementById('snCards'),SENSORS);
-  var kfDots=buildDots(document.getElementById('kfDots'),KEY_FEATURES.length);
-  var snDots=buildDots(document.getElementById('snDots'),SENSORS.length);
-  var kfRef={v:-1}, snRef={v:-1};
+  var kfCards = buildCards(document.getElementById('kfCards'), KEY_FEATURES);
+  var snCards = buildCards(document.getElementById('snCards'), SENSORS);
+  var kfDots  = buildDots(document.getElementById('kfDots'), KEY_FEATURES.length);
+  var snDots  = buildDots(document.getElementById('snDots'), SENSORS.length);
+  var kfRef   = {v:-1}, snRef = {v:-1};
 
-  function showCard(els,glow,data,dots,idx,ref){
-    idx=Math.max(0,Math.min(idx,els.length-1));
-    if(idx===ref.v) return;
-    var prev=ref.v; ref.v=idx;
-    els.forEach(function(c,i){
-      if(i===idx){ c.classList.remove('card-exit'); c.classList.add('card-enter'); }
-      else if(i===prev){ c.classList.remove('card-enter'); c.classList.add('card-exit'); }
-      else { c.classList.remove('card-enter','card-exit'); }
+  function showCard(els, glow, data, dots, idx, ref){
+    idx = Math.max(0, Math.min(idx, els.length - 1));
+    if (idx === ref.v) return;
+    var prev = ref.v; ref.v = idx;
+    els.forEach(function(c, i){
+      if (i === idx)      { c.classList.remove('card-exit'); c.classList.add('card-enter'); }
+      else if (i === prev){ c.classList.remove('card-enter'); c.classList.add('card-exit'); }
+      else                { c.classList.remove('card-enter', 'card-exit'); }
     });
-    if(glow) glow.style.background='radial-gradient(circle,'+data[idx].glow+' 0%,transparent 70%)';
-    if(dots) dots.forEach(function(d,i){ d.classList.toggle('active',i===idx); });
+    if (glow) glow.style.background = 'radial-gradient(circle,' + data[idx].glow + ' 0%,transparent 70%)';
+    if (dots) dots.forEach(function(d, i){ d.classList.toggle('active', i === idx); });
   }
 
-  showCard(kfCards,document.getElementById('kfGlow'),KEY_FEATURES,kfDots,0,kfRef);
-  showCard(snCards,document.getElementById('snGlow'),SENSORS,snDots,0,snRef);
+  showCard(kfCards, document.getElementById('kfGlow'), KEY_FEATURES, kfDots, 0, kfRef);
+  showCard(snCards, document.getElementById('snGlow'), SENSORS, snDots, 0, snRef);
 
-  var techRevealed=false;
+  var techRevealed = false;
   function checkTech(){
-    var rect=techWrap.getBoundingClientRect();
-    if(rect.top<window.innerHeight&&!techRevealed){
-      techRevealed=true;
+    var rect = techWrap.getBoundingClientRect();
+    if (rect.top < window.innerHeight && !techRevealed){
+      techRevealed = true;
       document.querySelectorAll('.tech-item').forEach(function(el){ el.classList.add('ti-visible'); });
     }
   }
 
-  var panelRevealObs=new IntersectionObserver(function(entries){
-    entries.forEach(function(e){ if(e.isIntersecting) e.target.classList.add('panel-revealed'); });
-  },{threshold:0.1});
+  var panelRevealObs = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){ if (e.isIntersecting) e.target.classList.add('panel-revealed'); });
+  }, {threshold:0.1});
   document.querySelectorAll('.ss-panel').forEach(function(p){ panelRevealObs.observe(p); });
 
   function onScroll(){
-    var kfScrolled=-kfWrap.getBoundingClientRect().top;
-    if(kfScrolled>=0) showCard(kfCards,document.getElementById('kfGlow'),KEY_FEATURES,kfDots,Math.floor(kfScrolled/STEP_PX),kfRef);
+    var kfScrolled = -kfWrap.getBoundingClientRect().top;
+    if (kfScrolled >= 0) showCard(kfCards, document.getElementById('kfGlow'), KEY_FEATURES, kfDots, Math.floor(kfScrolled / STEP_PX), kfRef);
 
-    var snScrolled=-snWrap.getBoundingClientRect().top;
-    if(snScrolled>=0) showCard(snCards,document.getElementById('snGlow'),SENSORS,snDots,Math.floor(snScrolled/STEP_PX),snRef);
+    var snScrolled = -snWrap.getBoundingClientRect().top;
+    if (snScrolled >= 0) showCard(snCards, document.getElementById('snGlow'), SENSORS, snDots, Math.floor(snScrolled / STEP_PX), snRef);
 
     checkTech();
-    if(window.scrollY>80) scrollHint.classList.remove('show');
+    if (window.scrollY > 80) scrollHint.classList.remove('show');
   }
 
-  window.addEventListener('scroll',onScroll,{passive:true});
+  window.addEventListener('scroll', onScroll, {passive:true});
   onScroll();
 })();
 
 /* ─── NAVBAR ─── */
-window.addEventListener('scroll',function(){
-  document.getElementById('navbar').classList.toggle('scrolled',window.scrollY>20);
+window.addEventListener('scroll', function(){
+  document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 20);
 });
-document.getElementById('hamburger').addEventListener('click',function(){
+document.getElementById('hamburger').addEventListener('click', function(){
   document.getElementById('navLinks').classList.toggle('open');
 });
 document.querySelectorAll('.nav-links a').forEach(function(a){
-  a.addEventListener('click',function(){ document.getElementById('navLinks').classList.remove('open'); });
+  a.addEventListener('click', function(){ document.getElementById('navLinks').classList.remove('open'); });
 });
 
 /* ─── ACTIVE NAV ─── */
-// Observe full sections for Home / Contact
 var sectionObs = new IntersectionObserver(function(entries){
   entries.forEach(function(e){
-    if(e.isIntersecting){
+    if (e.isIntersecting){
       document.querySelectorAll('.nav-links a[data-section]').forEach(function(a){ a.classList.remove('active'); });
-      var a = document.querySelector('.nav-links a[data-section="'+e.target.id+'"]');
-      if(a) a.classList.add('active');
+      var a = document.querySelector('.nav-links a[data-section="' + e.target.id + '"]');
+      if (a) a.classList.add('active');
     }
   });
-},{threshold:0.3});
-
+}, {threshold:0.3});
 ['home','contact'].forEach(function(id){
   var el = document.getElementById(id);
-  if(el) sectionObs.observe(el);
+  if (el) sectionObs.observe(el);
 });
 
-// Separately observe #about-team to activate "About Us" nav link
 var teamObs = new IntersectionObserver(function(entries){
   entries.forEach(function(e){
     var aboutLink = document.querySelector('.nav-links a[data-section="about"]');
-    if(!aboutLink) return;
-    if(e.isIntersecting){
+    if (!aboutLink) return;
+    if (e.isIntersecting){
       document.querySelectorAll('.nav-links a[data-section]').forEach(function(a){ a.classList.remove('active'); });
       aboutLink.classList.add('active');
     }
   });
-},{threshold:0.3});
-
+}, {threshold:0.3});
 var teamEl = document.getElementById('about-team');
-if(teamEl) teamObs.observe(teamEl);
+if (teamEl) teamObs.observe(teamEl);
 
 /* ─── REVEAL ON SCROLL ─── */
 (function(){
   var prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var revealEls = Array.from(document.querySelectorAll('.reveal'));
-
-  if(prefersReducedMotion){
+  if (prefersReducedMotion){
     revealEls.forEach(function(el){ el.classList.add('is-visible'); });
     return;
   }
-
   var observer = new IntersectionObserver(function(entries){
     entries.forEach(function(entry){
-      if(!entry.isIntersecting) return;
-      var el = entry.target;
+      if (!entry.isIntersecting) return;
+      var el    = entry.target;
       var delay = parseInt(el.dataset.delay) || 0;
-      setTimeout(function(){
-        el.classList.add('is-visible');
-      }, delay);
+      setTimeout(function(){ el.classList.add('is-visible'); }, delay);
       observer.unobserve(el);
     });
-  }, { threshold: 0.12 });
-
+  }, {threshold:0.12});
   revealEls.forEach(function(el){ observer.observe(el); });
 })();
 </script>
