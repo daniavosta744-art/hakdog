@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>System Configuration - Bangus Pond Monitor</title>
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome for Icons -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+  />
+
+  <!-- External CSS - Uses same dashboard CSS -->
+  <link rel="stylesheet" href="../css/dashboard.css">
+  
+  <!-- System Configuration CSS -->
+  <link rel="stylesheet" href="../css/systemConfig.css">
+  <link rel="stylesheet" href="../css/modal.css">
+
+</head>
+
+<body>
+  <!-- Loading Overlay -->
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-content">
+      <div class="loading-spinner"></div>
+      <h3 id="loadingText">Loading...</h3>
+    </div>
+  </div>
+
+  <!-- Mode Transition Overlay -->
+  <div class="mode-transition" id="modeTransition"></div>
+  
+  <!-- Stars for dark mode -->
+  <div class="stars" id="starsContainer"></div>
+
+  <!-- Hamburger Button -->
+  <button class="hamburger" id="hamburgerBtn" onclick="toggleSidebar()" aria-label="Toggle menu">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+
+  <!-- Overlay behind sidebar -->
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+  <div class="container">
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+      <ul>
+
+        <!-- ✅ ALL ROLES -->
+        <li>
+          <a href="dashboard.html">
+            <i class="fas fa-home icon"></i>
+            <span class="text">Dashboard</span>
+          </a>
+        </li>
+
+        <!-- ✅ USER + ADMIN only (hidden from guest) -->
+        <li id="historyTab" data-hide-for-role="guest">
+          <a href="history.html">
+            <i class="fas fa-database icon"></i>
+            <span class="text">Historical Data</span>
+          </a>
+        </li>
+
+        <!-- ✅ USER + ADMIN only (hidden from guest) -->
+        <li id="alertsTab" data-hide-for-role="guest">
+          <a href="alerts.html">
+            <i class="fas fa-bell icon"></i>
+            <span class="text">Alerts</span>
+          </a>
+        </li>
+
+        <!-- ✅ USER + ADMIN only (hidden from guest) -->
+        <li id="reportsTab" data-hide-for-role="guest">
+          <a href="reports.html">
+            <i class="fas fa-file-alt icon"></i>
+            <span class="text">Reports</span>
+          </a>
+        </li>
+
+        <!-- ✅ ADMIN only -->
+        <li id="systemConfigurationTab" class="active" data-role="admin">
+          <a href="systemConfig.html">
+            <i class="fas fa-user-cog icon"></i>
+            <span class="text">User & System</span>
+          </a>
+        </li>
+
+        <!-- ✅ ADMIN only -->
+        <li id="adminDashboardTab" data-role="admin">
+          <a href="admindashboard.html">
+            <i class="fas fa-user-shield icon"></i>
+            <span class="text">Admin</span>
+          </a>
+        </li>
+
+      </ul>
+    </aside>
+
+    <!-- CONTENT -->
+    <main class="content">
+      <!-- ENHANCED TOP STATUS BAR -->
+      <div class="top-status">
+        <!-- Left Section: Branding -->
+        <div class="status-left">
+        <img src="/images/gataw.png" alt="GATAW" style="height:32px; object-fit:contain; filter:brightness(0) ;">
+          <div class="header-text">
+            <div class="header-title">Bangus Pond Monitor</div>
+            <div class="header-location">
+              <i class="fas fa-map-marker-alt"></i>
+              <span>Brgy. Naguilayan Binmaley, Pangasinan</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Section: Status Items -->
+        <div class="status-right">
+          <div class="status-item">
+            <i class="fas fa-wifi"></i>
+            ESP32: <span id="espStatus" class="dot offline"></span>
+          </div>
+          
+          <div class="battery-indicator" id="batteryIndicator">
+            <i class="fas fa-battery-three-quarters"></i>
+            <span id="battery">--%</span>
+          </div>
+
+          <div class="status-item">
+            <i class="fas fa-fan"></i>
+            Aerator: <span id="aeratorStatusText">--</span>
+          </div>
+
+          <div class="status-item">
+            <i class="fas fa-clock"></i>
+            <span id="lastUpdate">--</span>
+          </div>
+
+          <!-- Dark Mode Toggle Button -->
+          <div class="header-theme-toggle">
+            <label class="theme-toggle-switch" title="Toggle dark mode">
+              <input type="checkbox" id="darkModeToggle" onchange="toggleDarkMode()" title="Toggle dark mode">
+              <span class="theme-toggle-slider">
+                <i class="fas fa-sun theme-icon-sun"></i>
+                <i class="fas fa-moon theme-icon-moon"></i>
+              </span>
+            </label>
+          </div>
+
+          <!-- Profile Dropdown -->
+          <div class="profile-dropdown-container">
+            <div class="profile-trigger" id="profileTrigger">
+              <i class="fas fa-user-circle"></i>
+              <span id="userEmail">Loading...</span>
+              <i class="fas fa-chevron-down dropdown-arrow"></i>
+            </div>
+            
+            <div class="profile-dropdown" id="profileDropdown">
+              <div class="dropdown-header">
+                <div class="dropdown-user-info">
+                  <i class="fas fa-user-circle user-avatar"></i>
+                  <div class="user-details">
+                    <span class="user-name" id="dropdownUserName">Loading...</span>
+                    <span class="user-email-full" id="dropdownUserEmail">Loading...</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="dropdown-divider"></div>
+              
+              <div class="dropdown-menu">
+                <!-- Role Display -->
+                <div class="dropdown-item role-item">
+                  <i class="fas fa-id-badge"></i>
+                  <span><strong id="dropdownUserRole">Loading...</strong></span>
+                </div>
+                
+                <div class="dropdown-divider"></div>
+                
+                <!-- Logout Button -->
+                <a href="#" class="dropdown-item logout-item" id="logoutBtn">
+                  <i class="fas fa-sign-out-alt"></i>
+                  <span>Logout</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <h1>System Configuration</h1>
+
+      <!-- Configuration Content -->
+      <div class="config-content">
+        <!-- Tab Navigation -->
+        <div class="config-tabs">
+          <button class="config-tab active" data-tab="wifi">
+            <i class="fas fa-wifi"></i> WiFi Configuration
+          </button>
+          <button class="config-tab" data-tab="sensors">
+            <i class="fas fa-sliders-h"></i> Sensor Configuration
+          </button>
+          <button class="config-tab" data-tab="notifications">
+            <i class="fas fa-sms"></i> SMS Settings
+          </button>
+          <button class="config-tab" data-tab="aerator">
+            <i class="fas fa-fan"></i> Aerator Configuration
+          </button>
+          <button class="config-tab" data-tab="sampling">
+            <i class="fas fa-clock"></i> Sampling Interval
+          </button>
+        </div>
+
+        <!-- WiFi Configuration Tab -->
+        <div class="tab-panel active" id="wifi-panel">
+          <div class="config-card">
+            <h3><i class="fas fa-wifi"></i> WiFi Settings</h3>
+
+            <!-- ── NEW: ESP32 WiFi Connection Status Banner ── -->
+            <div class="wifi-connection-status" id="wifiConnectionStatus">
+              <div class="wifi-status-left">
+                <div class="wifi-status-dot" id="wifiStatusDot"></div>
+                <div class="wifi-status-text">
+                  <span class="wifi-status-label" id="wifiStatusLabel">Checking connection...</span>
+                  <span class="wifi-status-ssid" id="wifiStatusSSID"></span>
+                </div>
+              </div>
+              <div class="wifi-status-right">
+                <span class="wifi-status-badge" id="wifiStatusBadge">
+                  <i class="fas fa-circle-notch fa-spin" id="wifiStatusIcon"></i>
+                  <span id="wifiStatusText">Checking</span>
+                </span>
+              </div>
+            </div>
+            <!-- ── END ESP32 WiFi Connection Status Banner ── -->
+
+            <form id="wifiForm">
+              <div class="form-group">
+                <label for="wifiSSID">Network Name (SSID)</label>
+                <input type="text" id="wifiSSID" placeholder="Enter WiFi network name" required>
+                <small>Enter the name of your WiFi network</small>
+              </div>
+
+              <!-- ── MODIFIED: Password field with show/hide toggle ── -->
+              <div class="form-group">
+                <label for="wifiPassword">Password</label>
+                <div class="password-input-wrapper">
+                  <input type="password" id="wifiPassword" placeholder="Enter WiFi password">
+                  <button
+                    type="button"
+                    class="password-toggle-btn"
+                    id="passwordToggleBtn"
+                    onclick="togglePasswordVisibility()"
+                    aria-label="Toggle password visibility"
+                    title="Show/hide password"
+                  >
+                    <i class="fas fa-eye" id="passwordToggleIcon"></i>
+                  </button>
+                </div>
+                <small>Enter your WiFi password (leave blank to keep current)</small>
+              </div>
+              <!-- ── END Modified Password Field ── -->
+
+              <div class="btn-group">
+                <button type="submit" class="btn btn-primary">
+                  <i class="fas fa-save"></i> Save WiFi Settings
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Sensor Configuration Tab -->
+        <div class="tab-panel" id="sensors-panel">
+          <!-- Dissolved Oxygen -->
+          <div class="config-card">
+            <h3><i class="fas fa-water"></i> Dissolved Oxygen (DO) Thresholds</h3>
+            
+            <div class="threshold-grid">
+              <div class="threshold-item">
+                <label>Safe Minimum (mg/L)</label>
+                <input type="number" step="0.1" id="do_safeMin" value="5.0" min="0" title="Safe minimum dissolved oxygen level (mg/L)">
+              </div>
+              <div class="threshold-item">
+                <label>Safe Maximum (mg/L)</label>
+                <input type="number" step="0.1" id="do_safeMax" value="9.0" min="0" title="Safe maximum dissolved oxygen level (mg/L)">
+              </div>
+              <div class="threshold-item">
+                <label>Warning Minimum (mg/L)</label>
+                <input type="number" step="0.1" id="do_warnMin" value="4.0" min="0" title="Warning minimum dissolved oxygen level (mg/L)">
+              </div>
+              <div class="threshold-item">
+                <label>Warning Maximum (mg/L)</label>
+                <input type="number" step="0.1" id="do_warnMax" value="10.0" min="0" title="Warning maximum dissolved oxygen level (mg/L)">
+              </div>
+            </div>
+          </div>
+
+          <!-- Temperature -->
+          <div class="config-card">
+            <h3><i class="fas fa-temperature-high"></i> Temperature Thresholds</h3>
+            
+            <div class="threshold-grid">
+              <div class="threshold-item">
+                <label>Safe Minimum (°C)</label>
+                <input type="number" step="0.1" id="temperature_safeMin" value="26.0" min="0" title="Safe minimum temperature (°C)">
+              </div>
+              <div class="threshold-item">
+                <label>Safe Maximum (°C)</label>
+                <input type="number" step="0.1" id="temperature_safeMax" value="32.0" min="0" title="Safe maximum temperature (°C)">
+              </div>
+              <div class="threshold-item">
+                <label>Warning Minimum (°C)</label>
+                <input type="number" step="0.1" id="temperature_warnMin" value="24.0" min="0" title="Warning minimum temperature (°C)">
+              </div>
+              <div class="threshold-item">
+                <label>Warning Maximum (°C)</label>
+                <input type="number" step="0.1" id="temperature_warnMax" value="34.0" min="0" title="Warning maximum temperature (°C)">
+              </div>
+            </div>
+          </div>
+
+          <!-- pH -->
+          <div class="config-card">
+            <h3><i class="fas fa-flask"></i> pH Thresholds</h3>
+            
+            <div class="threshold-grid">
+              <div class="threshold-item">
+                <label>Safe Minimum</label>
+                <input type="number" step="0.1" id="ph_safeMin" value="7.5" min="0" max="14" title="Safe minimum pH">
+              </div>
+              <div class="threshold-item">
+                <label>Safe Maximum</label>
+                <input type="number" step="0.1" id="ph_safeMax" value="8.5" min="0" max="14" title="Safe maximum pH">
+              </div>
+              <div class="threshold-item">
+                <label>Warning Minimum</label>
+                <input type="number" step="0.1" id="ph_warnMin" value="7.0" min="0" max="14" title="Warning minimum pH">
+              </div>
+              <div class="threshold-item">
+                <label>Warning Maximum</label>
+                <input type="number" step="0.1" id="ph_warnMax" value="9.0" min="0" max="14" title="Warning maximum pH">
+              </div>
+            </div>
+          </div>
+
+          <!-- Salinity -->
+          <div class="config-card">
+            <h3><i class="fas fa-tint"></i> Salinity Thresholds</h3>
+            
+            <div class="threshold-grid">
+              <div class="threshold-item">
+                <label>Safe Minimum (ppt)</label>
+                <input type="number" step="0.1" id="salinity_safeMin" value="15.0" min="0" title="Safe minimum salinity (ppt)">
+              </div>
+              <div class="threshold-item">
+                <label>Safe Maximum (ppt)</label>
+                <input type="number" step="0.1" id="salinity_safeMax" value="25.0" min="0" title="Safe maximum salinity (ppt)">
+              </div>
+              <div class="threshold-item">
+                <label>Warning Minimum (ppt)</label>
+                <input type="number" step="0.1" id="salinity_warnMin" value="12.0" min="0" title="Warning minimum salinity (ppt)">
+              </div>
+              <div class="threshold-item">
+                <label>Warning Maximum (ppt)</label>
+                <input type="number" step="0.1" id="salinity_warnMax" value="28.0" min="0" title="Warning maximum salinity (ppt)">
+              </div>
+            </div>
+          </div>
+
+          <!-- Turbidity -->
+          <div class="config-card">
+            <h3><i class="fas fa-eye"></i> Turbidity Thresholds</h3>
+            
+            <div class="threshold-grid">
+              <div class="threshold-item">
+                <label>Safe Minimum (NTU)</label>
+                <input type="number" step="0.1" id="turbidity_safeMin" value="20.0" min="0" title="Safe minimum turbidity (NTU)">
+              </div>
+              <div class="threshold-item">
+                <label>Safe Maximum (NTU)</label>
+                <input type="number" step="0.1" id="turbidity_safeMax" value="50.0" min="0" title="Safe maximum turbidity (NTU)">
+              </div>
+              <div class="threshold-item">
+                <label>Warning Minimum (NTU)</label>
+                <input type="number" step="0.1" id="turbidity_warnMin" value="10.0" min="0" title="Warning minimum turbidity (NTU)">
+              </div>
+              <div class="threshold-item">
+                <label>Warning Maximum (NTU)</label>
+                <input type="number" step="0.1" id="turbidity_warnMax" value="70.0" min="0" title="Warning maximum turbidity (NTU)">
+              </div>
+            </div>
+          </div>
+
+          <div class="btn-group">
+            <button class="btn btn-primary" onclick="saveThresholds()">
+              <i class="fas fa-save"></i> Save All Thresholds
+            </button>
+            <button class="btn btn-secondary" onclick="resetThresholds()">
+              <i class="fas fa-undo"></i> Reset to Defaults
+            </button>
+          </div>
+        </div>
+
+        <!-- SMS Settings Tab -->
+        <div class="tab-panel" id="notifications-panel">
+          <div class="config-card">
+            <h3><i class="fas fa-sms"></i> SMS Alert Recipients</h3>
+
+            <div class="info-box">
+              <i class="fas fa-info-circle"></i>
+              <span>Add Philippine mobile numbers to receive SMS alerts when pond conditions go out of range.</span>
+            </div>
+
+            <!-- Saved numbers list -->
+            <div id="smsNumbersList" class="sms-numbers-list">
+              <div class="sms-numbers-empty" id="smsNumbersEmpty">
+                <i class="fas fa-mobile-alt"></i>
+                <span>No SMS recipients added yet.</span>
+              </div>
+            </div>
+
+            <!-- Add new number form -->
+            <div class="sms-add-form">
+              <h4 class="section-heading">
+                <i class="fas fa-plus-circle"></i> Add Recipient
+              </h4>
+
+              <div class="sms-input-row">
+                <div class="form-group" style="flex:1; margin-bottom:0;">
+                  <label for="smsRecipientName">Name <span class="optional-label">(optional)</span></label>
+                  <input
+                    type="text"
+                    id="smsRecipientName"
+                    placeholder="e.g. Juan dela Cruz"
+                    maxlength="60"
+                  >
+                </div>
+
+                <div class="form-group" style="flex:1; margin-bottom:0;">
+                  <label for="smsRecipientNumber">Philippine Mobile Number</label>
+                  <div class="ph-number-wrapper">
+                    <span class="ph-prefix">+63</span>
+                    <input
+                      type="tel"
+                      id="smsRecipientNumber"
+                      placeholder="9XXXXXXXXX"
+                      maxlength="10"
+                      pattern="9[0-9]{9}"
+                      title="Enter 10-digit PH mobile number starting with 9"
+                    >
+                  </div>
+                  <small>Format: 9XXXXXXXXX (10 digits, no leading 0)</small>
+                </div>
+              </div>
+
+              <div class="btn-group" style="margin-top:16px;">
+                <button class="btn btn-primary" onclick="addSmsNumber()">
+                  <i class="fas fa-plus"></i> Add Number
+                </button>
+              </div>
+            </div>
+
+            <div class="btn-group" style="margin-top: 8px; border-top: 1px solid #e2e8f0; padding-top: 20px;">
+              <button class="btn btn-primary" onclick="saveSmsNumbers()">
+                <i class="fas fa-save"></i> Save SMS Recipients
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Aerator Configuration Tab -->
+        <div class="tab-panel" id="aerator-panel">
+          <div class="config-card">
+            <h3><i class="fas fa-fan"></i> Aerator Control Mode</h3>
+            
+            <div class="toggle-switch-container">
+              <div class="toggle-label">
+                <i class="fas fa-cog"></i>
+                <div>
+                  <strong id="aeratorModeLabel">Manual Mode</strong>
+                  <div class="toggle-description">
+                    <span id="aeratorModeDescription">Aerator is controlled manually from the dashboard</span>
+                  </div>
+                </div>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="aeratorAutoToggle" onchange="toggleAeratorMode(true)" title="Toggle automatic aerator mode">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+
+            <!-- Manual aerator ON/OFF — only visible when in Manual Mode -->
+            <div id="aeratorManualControl" class="aerator-manual-control">
+              <div class="aerator-manual-status-row">
+                <div class="aerator-manual-label">
+                  <i class="fas fa-fan" id="aeratorManualIcon"></i>
+                  <div>
+                    <strong>Aerator Power</strong>
+                    <div class="toggle-description">
+                      <span id="aeratorManualStatusText">Loading...</span>
+                    </div>
+                  </div>
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" id="aeratorManualToggle" onchange="setAeratorManual()" title="Turn aerator on or off manually">
+                  <span class="toggle-slider toggle-slider-green"></span>
+                </label>
+              </div>
+            </div>
+
+            <div id="aeratorAutoSettings" class="aerator-auto-settings-hidden">
+              <div class="info-box">
+                <i class="fas fa-info-circle"></i>
+                <span>In automatic mode, the aerator will turn on based on the conditions below.</span>
+              </div>
+
+              <div class="form-group">
+                <label for="aeratorDOThreshold">
+                  <i class="fas fa-water"></i> DO Threshold for Auto Start
+                </label>
+                <div class="input-with-unit">
+                  <input type="number" step="0.1" id="aeratorDOThreshold" value="5.0" min="0">
+                  <span class="input-unit">mg/L</span>
+                </div>
+                <small>Aerator will turn ON when DO falls below this value</small>
+              </div>
+
+              <div class="form-group">
+                <label for="aeratorDOStopThreshold">
+                  <i class="fas fa-water"></i> DO Threshold for Auto Stop
+                </label>
+                <div class="input-with-unit">
+                  <input type="number" step="0.1" id="aeratorDOStopThreshold" value="6.5" min="0">
+                  <span class="input-unit">mg/L</span>
+                </div>
+                <small>Aerator will turn OFF when DO rises above this value</small>
+              </div>
+
+              <h4 class="section-heading">
+                <i class="fas fa-calendar-alt"></i> Scheduled Time Periods (Optional)
+              </h4>
+
+              <div id="scheduleContainer">
+                <!-- Schedule items will be added here dynamically -->
+              </div>
+
+              <button type="button" class="btn btn-secondary btn-with-margin" onclick="addSchedule()">
+                <i class="fas fa-plus"></i> Add Schedule
+              </button>
+            </div>
+
+            <div class="btn-group">
+              <button class="btn btn-primary" onclick="saveAeratorConfig()">
+                <i class="fas fa-save"></i> Save Aerator Configuration
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sampling Interval Tab -->
+        <div class="tab-panel" id="sampling-panel">
+          <div class="config-card">
+            <h3><i class="fas fa-clock"></i> Data Sampling Interval</h3>
+            
+            <div class="info-box">
+              <i class="fas fa-info-circle"></i>
+              <span>Configure how often the system reads and records sensor data. Lower intervals provide more data but may drain the battery faster.</span>
+            </div>
+
+            <div class="form-group">
+              <label for="samplingInterval">Sampling Interval</label>
+              <select id="samplingInterval" onchange="toggleCustomInterval()">
+                <option value="60">1 Minute (High Frequency)</option>
+                <option value="120">2 Minutes</option>
+                <option value="300" selected>5 Minutes (Recommended)</option>
+                <option value="600">10 Minutes</option>
+                <option value="900">15 Minutes</option>
+                <option value="1800">30 Minutes</option>
+                <option value="3600">1 Hour</option>
+                <option value="7200">2 Hours</option>
+                <option value="custom">Custom Interval</option>
+              </select>
+            </div>
+
+            <!-- Custom Interval Inputs -->
+            <div id="customIntervalSection" class="custom-interval-section custom-interval-section-hidden">
+              <h4 class="custom-interval-heading">
+                <i class="fas fa-edit"></i> Custom Interval
+              </h4>
+              <div class="custom-interval-grid">
+                <div class="form-group form-group-no-margin">
+                  <label for="customHours" class="small-label-text">Hours</label>
+                  <input type="number" id="customHours" min="0" max="23" value="0" onchange="updateIntervalPreview()" class="custom-interval-input">
+                </div>
+                <div class="form-group form-group-no-margin">
+                  <label for="customMinutes" class="small-label-text">Minutes</label>
+                  <input type="number" id="customMinutes" min="0" max="59" value="5" onchange="updateIntervalPreview()" class="custom-interval-input">
+                </div>
+                <div class="form-group form-group-no-margin">
+                  <label for="customSeconds" class="small-label-text">Seconds</label>
+                  <input type="number" id="customSeconds" min="0" max="59" value="0" onchange="updateIntervalPreview()" class="custom-interval-input">
+                </div>
+              </div>
+              <small class="small-info-text">
+                <i class="fas fa-info-circle"></i> Minimum interval: 1 minute (60 seconds) | Maximum: 24 hours
+              </small>
+            </div>
+
+            <div class="sampling-preview-box">
+              <small id="samplingIntervalPreview" class="sampling-preview-text">
+                Data will be recorded every 5 minutes
+              </small>
+            </div>
+
+            <div class="btn-group">
+              <button class="btn btn-primary" onclick="saveSamplingInterval()">
+                <i class="fas fa-save"></i> Save Sampling Interval
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Confirmation Modal -->
+  <div id="confirmModal">
+    <div class="modal-box">
+      <div class="modal-icon">
+        <i class="fas fa-question-circle"></i>
+      </div>
+      <h3 id="confirmModalTitle">Confirm Action</h3>
+      <p id="confirmModalMessage">Are you sure you want to proceed?</p>
+      <div class="modal-actions">
+        <button class="btn-cancel" id="confirmModalCancelBtn">Cancel</button>
+        <button class="btn-confirm" id="confirmModalConfirmBtn">
+          <i class="fas fa-check"></i> Confirm
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Success/Info Notification -->
+  <div id="statusNotification">
+    <i class="fas fa-check-circle" id="statusNotificationIcon"></i>
+    <span id="statusNotificationText">Success!</span>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/all.min.js"></script>
+
+  <!-- Firebase SDK — ORDER MATTERS -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-messaging.js"></script>
+
+  <!-- Your Firebase Config -->
+  <script src="../js/firebase.js"></script>
+
+  <!-- 1. Auth Guard -->
+  <script src="../js/authguard.js"></script>
+
+<!-- 2. Role Manager -->
+  <script src="../js/rolemanager.js"></script>
+
+<!-- 3. Notifications — must be before auth.js -->
+  <script src="../js/notifications.js"></script>
+
+<!-- 4. Auth -->
+  <script src="../js/auth.js"></script>
+
+<!-- 5. App Logic -->
+  <script src="../js/app.js"></script>
+
+  <!-- 5. Page-specific scripts -->
+  <script src="../js/systemConfig.js"></script>
+  <script src="../js/dashEssentials.js"></script>
+
+
+</body>
+</html>

@@ -1,0 +1,1341 @@
+/* ===================================
+   SYSTEM CONFIGURATION STYLES
+   =================================== */
+
+.config-content {
+  padding: 0;
+  margin-top: 20px;
+}
+
+/* Tab Navigation */
+.config-tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 30px;
+  border-bottom: 2px solid #e2e8f0;
+  flex-wrap: wrap;
+}
+
+.config-tab {
+  padding: 12px 24px;
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 500;
+  color: #64748b;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.config-tab:hover {
+  color: #0ea5e9;
+  background: rgba(14, 165, 233, 0.05);
+}
+
+.config-tab.active {
+  color: #0ea5e9;
+  border-bottom-color: #0ea5e9;
+}
+
+.config-tab i {
+  margin-right: 8px;
+}
+
+/* Dark mode tab styles */
+body.dark-mode .config-tabs {
+  border-bottom-color: #334155;
+}
+
+body.dark-mode .config-tab {
+  color: #94a3b8;
+}
+
+body.dark-mode .config-tab:hover {
+  color: #38bdf8;
+  background: rgba(56, 189, 248, 0.1);
+}
+
+body.dark-mode .config-tab.active {
+  color: #38bdf8;
+  border-bottom-color: #38bdf8;
+}
+
+/* Tab Content Panels */
+.tab-panel {
+  display: none;
+  animation: fadeIn 0.3s ease;
+}
+
+.tab-panel.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Configuration Cards */
+.config-card {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.config-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+body.dark-mode .config-card {
+  background: #1e293b;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode .config-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.config-card h3 {
+  margin: 0 0 20px 0;
+  color: #1e293b;
+  font-size: 18px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+body.dark-mode .config-card h3 {
+  color: #f1f5f9;
+}
+
+.config-card h3 i {
+  color: #0ea5e9;
+}
+
+body.dark-mode .config-card h3 i {
+  color: #38bdf8;
+}
+
+/* Form Groups */
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  color: #475569;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+body.dark-mode .form-group label {
+  color: #cbd5e1;
+}
+
+.form-group input[type="text"],
+.form-group input[type="password"],
+.form-group input[type="number"],
+.form-group input[type="time"],
+.form-group input[type="tel"],
+.form-group select {
+  width: 100%;
+  padding: 10px 14px;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  background: white;
+  color: #1e293b;
+}
+
+body.dark-mode .form-group input[type="text"],
+body.dark-mode .form-group input[type="password"],
+body.dark-mode .form-group input[type="number"],
+body.dark-mode .form-group input[type="time"],
+body.dark-mode .form-group input[type="tel"],
+body.dark-mode .form-group select {
+  background: #0f172a;
+  border-color: #334155;
+  color: #f1f5f9;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #0ea5e9;
+  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+}
+
+body.dark-mode .form-group input:focus,
+body.dark-mode .form-group select:focus {
+  border-color: #38bdf8;
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.1);
+}
+
+.form-group small {
+  display: block;
+  margin-top: 6px;
+  color: #64748b;
+  font-size: 13px;
+}
+
+body.dark-mode .form-group small {
+  color: #94a3b8;
+}
+
+/* ============================================
+   PASSWORD FIELD WITH SHOW / HIDE TOGGLE
+   ============================================ */
+
+.password-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-input-wrapper input[type="password"],
+.password-input-wrapper input[type="text"] {
+  width: 100%;
+  padding-right: 46px;
+}
+
+.password-toggle-btn {
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 100%;
+  width: 44px;
+  background: transparent;
+  border: none;
+  border-left: 2px solid #e2e8f0;
+  border-radius: 0 8px 8px 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #94a3b8;
+  font-size: 15px;
+  transition: color 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+}
+
+.password-toggle-btn:hover {
+  color: #0ea5e9;
+  background: rgba(14, 165, 233, 0.06);
+  border-left-color: #0ea5e9;
+}
+
+.password-toggle-btn:focus {
+  outline: none;
+  color: #0ea5e9;
+}
+
+body.dark-mode .password-toggle-btn {
+  border-left-color: #334155;
+  color: #64748b;
+}
+
+body.dark-mode .password-toggle-btn:hover {
+  color: #38bdf8;
+  background: rgba(56, 189, 248, 0.08);
+  border-left-color: #38bdf8;
+}
+
+.password-input-wrapper:focus-within input {
+  border-color: #0ea5e9;
+  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+}
+
+body.dark-mode .password-input-wrapper:focus-within input {
+  border-color: #38bdf8;
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.1);
+}
+
+/* ============================================
+   ESP32 WIFI CONNECTION STATUS BANNER
+   ============================================ */
+
+.wifi-connection-status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  border-radius: 10px;
+  margin-bottom: 22px;
+  border: 2px solid #e2e8f0;
+  background: #f8fafc;
+  transition: all 0.4s ease;
+  gap: 12px;
+}
+
+.wifi-connection-status.connected {
+  background: #f0fdf4;
+  border-color: #86efac;
+}
+
+.wifi-connection-status.disconnected {
+  background: #fff1f2;
+  border-color: #fca5a5;
+}
+
+.wifi-connection-status.checking {
+  background: #f8fafc;
+  border-color: #e2e8f0;
+}
+
+body.dark-mode .wifi-connection-status {
+  background: #0f172a;
+  border-color: #334155;
+}
+
+body.dark-mode .wifi-connection-status.connected {
+  background: rgba(16, 185, 129, 0.1);
+  border-color: rgba(16, 185, 129, 0.4);
+}
+
+body.dark-mode .wifi-connection-status.disconnected {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.4);
+}
+
+body.dark-mode .wifi-connection-status.checking {
+  background: #0f172a;
+  border-color: #334155;
+}
+
+.wifi-status-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+}
+
+.wifi-status-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: #cbd5e1;
+  transition: background 0.4s ease;
+}
+
+.wifi-connection-status.connected .wifi-status-dot {
+  background: #10b981;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.25);
+  animation: wifiPulse 2s ease-in-out infinite;
+}
+
+.wifi-connection-status.disconnected .wifi-status-dot {
+  background: #ef4444;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
+}
+
+@keyframes wifiPulse {
+  0%, 100% { box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.25); }
+  50%       { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0.08); }
+}
+
+.wifi-status-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.wifi-status-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1e293b;
+  line-height: 1.3;
+}
+
+body.dark-mode .wifi-status-label {
+  color: #f1f5f9;
+}
+
+.wifi-connection-status.connected .wifi-status-label {
+  color: #065f46;
+}
+
+body.dark-mode .wifi-connection-status.connected .wifi-status-label {
+  color: #6ee7b7;
+}
+
+.wifi-connection-status.disconnected .wifi-status-label {
+  color: #991b1b;
+}
+
+body.dark-mode .wifi-connection-status.disconnected .wifi-status-label {
+  color: #fca5a5;
+}
+
+.wifi-status-ssid {
+  font-size: 12px;
+  color: #64748b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 260px;
+  margin-top: 2px;
+}
+
+body.dark-mode .wifi-status-ssid {
+  color: #94a3b8;
+}
+
+.wifi-status-right {
+  flex-shrink: 0;
+}
+
+.wifi-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  background: #e2e8f0;
+  color: #64748b;
+  transition: all 0.4s ease;
+}
+
+.wifi-connection-status.connected .wifi-status-badge {
+  background: #dcfce7;
+  color: #166534;
+}
+
+body.dark-mode .wifi-connection-status.connected .wifi-status-badge {
+  background: rgba(16, 185, 129, 0.2);
+  color: #6ee7b7;
+}
+
+.wifi-connection-status.disconnected .wifi-status-badge {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+body.dark-mode .wifi-connection-status.disconnected .wifi-status-badge {
+  background: rgba(239, 68, 68, 0.2);
+  color: #fca5a5;
+}
+
+body.dark-mode .wifi-status-badge {
+  background: #1e293b;
+  color: #94a3b8;
+}
+
+/* ============================================
+   THRESHOLD CONFIGURATION GRID
+   ============================================ */
+
+.threshold-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 14px;
+  margin-top: 16px;
+}
+
+.threshold-item {
+  background: #f8fafc;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+}
+
+body.dark-mode .threshold-item {
+  background: #0f172a;
+  border-color: #334155;
+}
+
+.threshold-item label {
+  font-size: 12px;
+  color: #64748b;
+  margin-bottom: 6px;
+  display: block;
+}
+
+body.dark-mode .threshold-item label {
+  color: #94a3b8;
+}
+
+.threshold-item input {
+  width: 100%;
+  padding: 7px 9px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+body.dark-mode .threshold-item input {
+  background: #1e293b;
+  border-color: #475569;
+  color: #f1f5f9;
+}
+
+/* Toggle Switch */
+.toggle-switch-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  background: #f8fafc;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  border: 2px solid #e2e8f0;
+}
+
+body.dark-mode .toggle-switch-container {
+  background: #0f172a;
+  border-color: #334155;
+}
+
+.toggle-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 500;
+  color: #1e293b;
+}
+
+body.dark-mode .toggle-label {
+  color: #f1f5f9;
+}
+
+.toggle-label i {
+  font-size: 20px;
+  color: #0ea5e9;
+}
+
+body.dark-mode .toggle-label i {
+  color: #38bdf8;
+}
+
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 56px;
+  height: 30px;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #cbd5e1;
+  transition: 0.4s;
+  border-radius: 30px;
+}
+
+.toggle-slider:before {
+  position: absolute;
+  content: "";
+  height: 22px;
+  width: 22px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: 0.4s;
+  border-radius: 50%;
+}
+
+.toggle-switch input:checked + .toggle-slider {
+  background-color: #0ea5e9;
+}
+
+body.dark-mode .toggle-switch input:checked + .toggle-slider {
+  background-color: #38bdf8;
+}
+
+.toggle-switch input:checked + .toggle-slider:before {
+  transform: translateX(26px);
+}
+
+.toggle-switch input:disabled + .toggle-slider {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Aerator Schedule */
+.aerator-schedule {
+  margin-top: 20px;
+}
+
+.schedule-item {
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+  margin-bottom: 12px;
+  padding: 14px;
+  background: #f8fafc;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  position: relative;
+}
+
+body.dark-mode .schedule-item {
+  background: #0f172a;
+  border-color: #334155;
+}
+
+.schedule-item .form-group {
+  flex: 1;
+  margin-bottom: 0;
+}
+
+.schedule-item .btn-remove {
+  padding: 10px 14px;
+  background: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 14px;
+}
+
+.schedule-item .btn-remove:hover {
+  background: #dc2626;
+}
+
+#scheduleContainer {
+  margin-top: 12px;
+}
+
+.schedule-item-header {
+  font-size: 13px;
+  font-weight: 600;
+  color: #475569;
+  margin-bottom: 8px;
+}
+
+body.dark-mode .schedule-item-header {
+  color: #cbd5e1;
+}
+
+/* Buttons */
+.btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-primary {
+  background: #0ea5e9;
+  color: white;
+}
+
+.btn-primary:hover {
+  background: #0284c7;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
+}
+
+body.dark-mode .btn-primary {
+  background: #38bdf8;
+  color: #0f172a;
+}
+
+body.dark-mode .btn-primary:hover {
+  background: #0ea5e9;
+}
+
+.btn-secondary {
+  background: #64748b;
+  color: white;
+}
+
+.btn-secondary:hover {
+  background: #475569;
+}
+
+.btn-success {
+  background: #10b981;
+  color: white;
+}
+
+.btn-success:hover {
+  background: #059669;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.btn-group {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+/* Status Messages */
+.status-message {
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+}
+
+.status-message.success {
+  background: #d1fae5;
+  color: #065f46;
+  border-left: 4px solid #10b981;
+}
+
+.status-message.error {
+  background: #fee2e2;
+  color: #991b1b;
+  border-left: 4px solid #ef4444;
+}
+
+.status-message.info {
+  background: #dbeafe;
+  color: #1e40af;
+  border-left: 4px solid #3b82f6;
+}
+
+body.dark-mode .status-message.success {
+  background: rgba(16, 185, 129, 0.2);
+  color: #6ee7b7;
+}
+
+body.dark-mode .status-message.error {
+  background: rgba(239, 68, 68, 0.2);
+  color: #fca5a5;
+}
+
+body.dark-mode .status-message.info {
+  background: rgba(59, 130, 246, 0.2);
+  color: #93c5fd;
+}
+
+/* Connection Status */
+.connection-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: #f1f5f9;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+body.dark-mode .connection-status {
+  background: #0f172a;
+}
+
+.connection-status.connected {
+  border-left: 4px solid #10b981;
+}
+
+.connection-status.disconnected {
+  border-left: 4px solid #ef4444;
+}
+
+.connection-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+.connection-dot.connected {
+  background: #10b981;
+}
+
+.connection-dot.disconnected {
+  background: #ef4444;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.5; }
+}
+
+/* Loading State */
+.loading-state {
+  text-align: center;
+  padding: 40px;
+  color: #64748b;
+}
+
+body.dark-mode .loading-state {
+  color: #94a3b8;
+}
+
+.loading-spinner-small {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  border: 3px solid #e2e8f0;
+  border-top-color: #0ea5e9;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 0 auto 16px;
+}
+
+body.dark-mode .loading-spinner-small {
+  border-color: #334155;
+  border-top-color: #38bdf8;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .config-tabs {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .config-tab {
+    white-space: nowrap;
+    padding: 10px 16px;
+    font-size: 14px;
+  }
+
+  .threshold-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .schedule-item {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .btn-group {
+    flex-direction: column;
+  }
+
+  .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .wifi-connection-status {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .wifi-status-ssid {
+    max-width: 100%;
+  }
+
+  .sms-input-row {
+    flex-direction: column;
+  }
+
+  .sms-recipient-item {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+}
+
+/* Info Box */
+.info-box {
+  background: #eff6ff;
+  border-left: 4px solid #3b82f6;
+  padding: 14px 16px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  color: #1e40af;
+}
+
+body.dark-mode .info-box {
+  background: rgba(59, 130, 246, 0.15);
+  color: #93c5fd;
+}
+
+.info-box i {
+  margin-right: 8px;
+}
+
+/* Input with Unit */
+.input-with-unit {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.input-with-unit input {
+  flex: 1;
+}
+
+.input-unit {
+  color: #64748b;
+  font-size: 14px;
+  font-weight: 500;
+  min-width: 60px;
+}
+
+body.dark-mode .input-unit {
+  color: #94a3b8;
+}
+
+/* ===== INLINE STYLES CONVERTED TO CLASSES ===== */
+
+.hidden-admin-tab {
+  display: none;
+}
+
+.toggle-description {
+  font-size: 13px;
+  color: #64748b;
+  margin-top: 4px;
+}
+
+.section-heading {
+  margin: 24px 0 16px 0;
+  color: #475569;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+body.dark-mode .section-heading {
+  color: #94a3b8;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.checkbox-input {
+  width: auto;
+  margin: 0;
+}
+
+.btn-with-margin {
+  margin-top: 12px;
+}
+
+.aerator-auto-settings-hidden {
+  display: none;
+}
+
+.custom-interval-section-hidden {
+  display: none;
+}
+
+.custom-interval-section {
+  margin-top: 16px;
+  padding: 16px;
+  background: #f8fafc;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+}
+
+body.dark-mode .custom-interval-section {
+  background: #0f172a;
+  border-color: #334155;
+}
+
+.custom-interval-heading {
+  margin: 0 0 12px 0;
+  color: #475569;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+body.dark-mode .custom-interval-heading {
+  color: #cbd5e1;
+}
+
+.custom-interval-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.form-group-no-margin {
+  margin: 0;
+}
+
+.small-label-text {
+  font-size: 13px;
+}
+
+.custom-interval-input {
+  padding: 8px;
+  font-size: 14px;
+}
+
+.small-info-text {
+  display: block;
+  margin-top: 8px;
+  color: #64748b;
+}
+
+.sampling-preview-box {
+  margin-top: 16px;
+  padding: 12px;
+  background: #f0f9ff;
+  border-left: 4px solid #0ea5e9;
+  border-radius: 4px;
+}
+
+body.dark-mode .sampling-preview-box {
+  background: #082f49;
+  border-left-color: #0ea5e9;
+}
+
+.sampling-preview-text {
+  color: #0c4a6e;
+  font-weight: 500;
+}
+
+body.dark-mode .sampling-preview-text {
+  color: #7dd3fc;
+}
+
+/* ============================================
+   SMS SETTINGS STYLES
+   ============================================ */
+
+/* Saved recipients list */
+.sms-numbers-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 24px;
+  min-height: 60px;
+}
+
+/* Empty state */
+.sms-numbers-empty {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 18px 16px;
+  background: #f8fafc;
+  border: 2px dashed #cbd5e1;
+  border-radius: 10px;
+  color: #94a3b8;
+  font-size: 14px;
+}
+
+body.dark-mode .sms-numbers-empty {
+  background: #0f172a;
+  border-color: #334155;
+  color: #475569;
+}
+
+.sms-numbers-empty i {
+  font-size: 20px;
+  color: #cbd5e1;
+}
+
+body.dark-mode .sms-numbers-empty i {
+  color: #334155;
+}
+
+/* Individual recipient row */
+.sms-recipient-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px;
+  background: #f0f9ff;
+  border: 1.5px solid #bae6fd;
+  border-radius: 10px;
+  transition: all 0.25s ease;
+  animation: fadeIn 0.25s ease;
+}
+
+body.dark-mode .sms-recipient-item {
+  background: rgba(14, 165, 233, 0.08);
+  border-color: rgba(14, 165, 233, 0.25);
+}
+
+.sms-recipient-item:hover {
+  border-color: #38bdf8;
+  box-shadow: 0 2px 8px rgba(14, 165, 233, 0.12);
+}
+
+/* Left info block */
+.sms-recipient-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+}
+
+.sms-recipient-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #0ea5e9;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+body.dark-mode .sms-recipient-icon {
+  background: #38bdf8;
+  color: #0f172a;
+}
+
+.sms-recipient-details {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.sms-recipient-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1e293b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+body.dark-mode .sms-recipient-name {
+  color: #f1f5f9;
+}
+
+em.no-name {
+  font-style: italic;
+  color: #94a3b8;
+  font-weight: 400;
+}
+
+.sms-recipient-number {
+  font-size: 13px;
+  color: #0ea5e9;
+  font-weight: 500;
+  margin-top: 2px;
+  font-family: monospace, monospace;
+  letter-spacing: 0.02em;
+}
+
+body.dark-mode .sms-recipient-number {
+  color: #38bdf8;
+}
+
+/* Remove button */
+.sms-remove-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  border: none;
+  background: #fee2e2;
+  color: #ef4444;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+.sms-remove-btn:hover {
+  background: #ef4444;
+  color: white;
+  transform: scale(1.05);
+}
+
+body.dark-mode .sms-remove-btn {
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+}
+
+body.dark-mode .sms-remove-btn:hover {
+  background: #ef4444;
+  color: white;
+}
+
+/* Add recipient form row */
+.sms-add-form {
+  padding: 20px;
+  background: #f8fafc;
+  border-radius: 10px;
+  border: 1.5px solid #e2e8f0;
+  margin-top: 4px;
+}
+
+body.dark-mode .sms-add-form {
+  background: #0f172a;
+  border-color: #334155;
+}
+
+.sms-input-row {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+/* PH Number prefix (+63) input wrapper */
+.ph-number-wrapper {
+  display: flex;
+  align-items: stretch;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  background: white;
+}
+
+body.dark-mode .ph-number-wrapper {
+  border-color: #334155;
+  background: #0f172a;
+}
+
+.ph-number-wrapper:focus-within {
+  border-color: #0ea5e9;
+  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+}
+
+body.dark-mode .ph-number-wrapper:focus-within {
+  border-color: #38bdf8;
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.1);
+}
+
+.ph-prefix {
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  background: #f1f5f9;
+  color: #475569;
+  font-size: 14px;
+  font-weight: 600;
+  border-right: 2px solid #e2e8f0;
+  white-space: nowrap;
+  user-select: none;
+  font-family: monospace, monospace;
+}
+
+body.dark-mode .ph-prefix {
+  background: #1e293b;
+  color: #94a3b8;
+  border-right-color: #334155;
+}
+
+/* Override the general form-group input rules for the tel inside the wrapper */
+.ph-number-wrapper input[type="tel"] {
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  padding-left: 10px;
+  flex: 1;
+  min-width: 0;
+  font-family: monospace, monospace;
+  letter-spacing: 0.04em;
+  background: transparent;
+  color: #1e293b;
+}
+
+body.dark-mode .ph-number-wrapper input[type="tel"] {
+  color: #f1f5f9;
+  background: transparent;
+}
+
+.ph-number-wrapper input[type="tel"]:focus {
+  outline: none;
+}
+
+/* Optional label style */
+.optional-label {
+  font-size: 12px;
+  font-weight: 400;
+  color: #94a3b8;
+  margin-left: 4px;
+}
+
+/* ============================================
+   AERATOR MANUAL CONTROL
+   ============================================ */
+
+.aerator-manual-control {
+  padding: 16px;
+  background: #f8fafc;
+  border-radius: 10px;
+  border: 2px solid #e2e8f0;
+  margin-bottom: 20px;
+  transition: all 0.3s ease;
+}
+
+body.dark-mode .aerator-manual-control {
+  background: #0f172a;
+  border-color: #334155;
+}
+
+.aerator-manual-status-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.aerator-manual-label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 500;
+  color: #1e293b;
+}
+
+body.dark-mode .aerator-manual-label {
+  color: #f1f5f9;
+}
+
+.aerator-manual-label .fas.fa-fan {
+  font-size: 22px;
+  color: #94a3b8;
+  transition: color 0.3s ease;
+}
+
+/* Green slider variant for the manual ON/OFF toggle */
+.toggle-switch input:checked + .toggle-slider-green {
+  background-color: #10b981;
+}
+
+body.dark-mode .toggle-switch input:checked + .toggle-slider-green {
+  background-color: #34d399;
+}

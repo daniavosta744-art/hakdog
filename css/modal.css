@@ -1,0 +1,387 @@
+/* ============================================================
+   DELETE CONFIRMATION MODAL & SUCCESS NOTIFICATION STYLES
+   Add these styles to the end of your history.css file
+   ============================================================ */
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Delete Confirmation Modal */
+#deleteConfirmModal {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(3px);
+}
+
+#deleteConfirmModal.show {
+  display: flex;
+  animation: fadeIn 0.15s ease;
+}
+
+#deleteConfirmModal .modal-box {
+  background: #fff;
+  border-radius: 14px;
+  padding: 32px 28px 24px;
+  max-width: 420px;
+  width: 90%;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+  animation: slideUp 0.2s ease;
+}
+
+body.dark #deleteConfirmModal .modal-box {
+  background: #1e293b;
+  color: #e2e8f0;
+}
+
+#deleteConfirmModal .modal-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: #fee2e2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px;
+}
+
+#deleteConfirmModal .modal-icon i {
+  font-size: 1.5rem;
+  color: #ef4444;
+}
+
+#deleteConfirmModal h3 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0 0 10px;
+  text-align: center;
+}
+
+body.dark #deleteConfirmModal h3 {
+  color: #f1f5f9;
+}
+
+#deleteConfirmModal p {
+  font-size: 0.92rem;
+  color: #64748b;
+  text-align: center;
+  margin: 0 0 24px;
+  line-height: 1.6;
+}
+
+body.dark #deleteConfirmModal p {
+  color: #94a3b8;
+}
+
+#deleteConfirmModal .modal-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+#deleteConfirmModal .btn-cancel {
+  flex: 1;
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: 1.5px solid #cbd5e1;
+  background: transparent;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: #475569;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+#deleteConfirmModal .btn-cancel:hover {
+  background: #f1f5f9;
+}
+
+body.dark #deleteConfirmModal .btn-cancel {
+  border-color: #334155;
+  color: #94a3b8;
+}
+
+body.dark #deleteConfirmModal .btn-cancel:hover {
+  background: #334155;
+}
+
+#deleteConfirmModal .btn-confirm-delete {
+  flex: 1;
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: none;
+  background: #ef4444;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+#deleteConfirmModal .btn-confirm-delete:hover {
+  background: #dc2626;
+}
+
+/* Success Notification */
+#successNotification {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  background: #10b981;
+  color: white;
+  padding: 16px 24px;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3);
+  display: none;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  z-index: 10000;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+#successNotification.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+#successNotification i {
+  font-size: 1.2rem;
+}
+
+body.dark #successNotification {
+  background: #059669;
+  box-shadow: 0 10px 30px rgba(5, 150, 105, 0.4);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Confirmation Modal */
+#confirmModal {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(3px);
+}
+
+#confirmModal.show {
+  display: flex;
+  animation: fadeIn 0.15s ease;
+}
+
+#confirmModal .modal-box {
+  background: #fff;
+  border-radius: 14px;
+  padding: 32px 28px 24px;
+  max-width: 420px;
+  width: 90%;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+  animation: slideUp 0.2s ease;
+}
+
+body.dark #confirmModal .modal-box {
+  background: #1e293b;
+  color: #e2e8f0;
+}
+
+#confirmModal .modal-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: #dbeafe;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px;
+}
+
+#confirmModal .modal-icon i {
+  font-size: 1.5rem;
+  color: #0ea5e9;
+}
+
+#confirmModal h3 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0 0 10px;
+  text-align: center;
+}
+
+body.dark #confirmModal h3 {
+  color: #f1f5f9;
+}
+
+#confirmModal p {
+  font-size: 0.92rem;
+  color: #64748b;
+  text-align: center;
+  margin: 0 0 24px;
+  line-height: 1.6;
+}
+
+body.dark #confirmModal p {
+  color: #94a3b8;
+}
+
+#confirmModal .modal-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+#confirmModal .btn-cancel {
+  flex: 1;
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: 1.5px solid #cbd5e1;
+  background: transparent;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: #475569;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+#confirmModal .btn-cancel:hover {
+  background: #f1f5f9;
+}
+
+body.dark #confirmModal .btn-cancel {
+  border-color: #334155;
+  color: #94a3b8;
+}
+
+body.dark #confirmModal .btn-cancel:hover {
+  background: #334155;
+}
+
+#confirmModal .btn-confirm {
+  flex: 1;
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: none;
+  background: #0ea5e9;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+#confirmModal .btn-confirm:hover {
+  background: #0284c7;
+}
+
+/* Status Notification */
+#statusNotification {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  background: #10b981;
+  color: white;
+  padding: 16px 24px;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3);
+  display: none;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  z-index: 10000;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  max-width: 400px;
+}
+
+#statusNotification.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+#statusNotification i {
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+/* Success variant (default green) */
+#statusNotification.success {
+  background: #10b981;
+  box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3);
+}
+
+body.dark #statusNotification.success {
+  background: #059669;
+  box-shadow: 0 10px 30px rgba(5, 150, 105, 0.4);
+}
+
+/* Error variant (red) */
+#statusNotification.error {
+  background: #ef4444;
+  box-shadow: 0 10px 30px rgba(239, 68, 68, 0.3);
+}
+
+body.dark #statusNotification.error {
+  background: #dc2626;
+  box-shadow: 0 10px 30px rgba(220, 38, 38, 0.4);
+}
+
+/* Info variant (blue) */
+#statusNotification.info {
+  background: #0ea5e9;
+  box-shadow: 0 10px 30px rgba(14, 165, 233, 0.3);
+}
+
+body.dark #statusNotification.info {
+  background: #0284c7;
+  box-shadow: 0 10px 30px rgba(2, 132, 199, 0.4);
+}
