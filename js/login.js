@@ -119,18 +119,18 @@ function initLogin() {
     
     switch(role) {
       case 'admin':
-        window.location.href = 'html/admindashboard.html';
+        window.location.href = 'admindashboard.html';
         break;
       case 'user':
-        window.location.href = 'html/dashboard.html';
+        window.location.href = 'dashboard.html';
         break;
       case 'guest':
-        window.location.href = 'html/dashboard.html';
+        window.location.href = 'dashboard.html';
         break;
       default:
         // If role is not set or unknown, default to user dashboard
         console.warn('Unknown role, defaulting to user dashboard');
-        window.location.href = 'html/dashboard.html';
+        window.location.href = 'dashboard.html';
     }
   }
 
@@ -185,7 +185,7 @@ function initLogin() {
         
         // Redirect to signup after 3 seconds
         setTimeout(() => {
-          window.location.href = '/html/signup.html';
+          window.location.href = 'signup.html';
         }, 3000);
         return;
       }
@@ -242,7 +242,7 @@ function initLogin() {
       if (authError.code === 'auth/user-not-found') {
         showError('No account found with this email. Please sign up first.');
         setTimeout(() => {
-          window.location.href = '/html/signup.html';
+          window.location.href = 'signup.html';
         }, 2000);
       } else if (authError.code === 'auth/wrong-password') {
         showError('Incorrect password. Please try again.');
@@ -288,7 +288,7 @@ function initLogin() {
       console.log('✅ Guest session created, redirecting to dashboard...');
       
       setTimeout(() => {
-        window.location.href = 'html/dashboard.html';
+        window.location.href = 'dashboard.html';
       }, 1000);
       
     } catch (error) {
