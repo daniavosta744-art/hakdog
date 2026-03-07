@@ -42,7 +42,7 @@ async function initPushNotifications(uid) {
     console.log('[Notifications] Initializing push notifications for uid:', uid);
 
     // Register the service worker
-    const registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
+    const registration = await navigator.serviceWorker.register('./firebase-messaging-sw.js');
     console.log('[Notifications] Service worker registered:', registration);
 
     // Initialize Firebase Messaging
@@ -297,5 +297,6 @@ function _showNotificationBanner(status) {
     if (content) content.insertBefore(banner, content.firstChild);
   }
 }
+
 
 console.log('[Notifications] notifications.js loaded.');
